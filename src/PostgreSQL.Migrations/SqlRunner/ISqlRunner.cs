@@ -34,11 +34,11 @@ namespace PostgreSQL.Migrations.SqlRunner {
         Task ApplyMigrationAsync ( string connectionString, AvailableMigration migration );
 
         /// <summary>
-        /// Apply migration.
+        /// Revert migration.
         /// </summary>
         /// <param name="connectionString">Connection string.</param>
-        /// <param name="migration">Migrations for apply.</param>
-        Task RevertMigration ( string connectionString, AvailableMigration migration );
+        /// <param name="migration">Migrations for revert.</param>
+        Task RevertMigrationAsync ( string connectionString, AvailableMigration migration );
 
     }
 

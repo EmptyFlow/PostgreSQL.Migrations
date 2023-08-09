@@ -26,8 +26,4 @@
     <ProjectReference Include="..\PostgreSQL.Migrations\PostgreSQL.Migrations.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="IntegrationTests\" />
-  </ItemGroup>
-
 </Project>

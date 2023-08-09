@@ -16,6 +16,11 @@
         public string Description { get; set; } = "";
 
         /// <summary>
+        /// Issue number or link.
+        /// </summary>
+        public string Issue { get; set; } = "";
+
+        /// <summary>
         /// Fields.
         /// </summary>
         public Dictionary<string, object> Fields { get; set; } = new Dictionary<string, object>();

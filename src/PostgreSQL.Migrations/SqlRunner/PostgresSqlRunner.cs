@@ -7,6 +7,18 @@ namespace PostgreSQL.Migrations.SqlRunner {
 
         private readonly Dictionary<string, (NpgsqlConnection, NpgsqlTransaction)> m_connections = new ();
 
+        private const string MigrationTable = "postgresmigrations";
+
+        private static async Task CreateMigrationTableIfRequired ( NpgsqlConnection connection, NpgsqlTransaction transaction ) {
+            await using var cmd = new NpgsqlCommand (
+                $"CREATE TABLE IF NOT EXISTS {MigrationTable}(timestamp integer NOT NULL PRIMARY KEY, description text, issue text, created timestamp NOT NULL DEFAULT now())",
+                connection,
+                transaction
+            );
+
+            await cmd.ExecuteNonQueryAsync ();
+        }
+
         public async Task BeginTransactionAsync ( string connectionString ) {
             if ( string.IsNullOrEmpty ( connectionString ) ) throw new ArgumentNullException ( nameof ( connectionString ) );
             if ( m_connections.ContainsKey ( connectionString ) ) throw new ArgumentException ( $"Transaction for connection string: {connectionString} already created! If you want to start it again need commit current." );
@@ -15,6 +27,9 @@ namespace PostgreSQL.Migrations.SqlRunner {
 
             await connection.OpenAsync ();
             var transaction = await connection.BeginTransactionAsync ();
+
+            await CreateMigrationTableIfRequired ( connection, transaction );
+
             m_connections[connectionString] = (connection, transaction);
         }
 
@@ -28,17 +43,18 @@ namespace PostgreSQL.Migrations.SqlRunner {
             m_connections.Remove ( connectionString );
         }
 
-        private static async Task CreateMigrationRecord ( int migrationId, string description, NpgsqlConnection connection, NpgsqlTransaction transaction ) {
-            await using var cmd = new NpgsqlCommand ( "INSERT INTO migrations (timestamp, description, issue) VALUES (@_param1, @_param2, @_param3)", connection, transaction );
+        private static async Task CreateMigrationRecord ( int migrationId, string description, string issue, NpgsqlConnection connection, NpgsqlTransaction transaction ) {
+            await using var cmd = new NpgsqlCommand ( $"INSERT INTO {MigrationTable} (timestamp, description, issue) VALUES (@_param1, @_param2, @_param3)", connection, transaction );
 
             cmd.Parameters.AddWithValue ( "@_param1", migrationId );
             cmd.Parameters.AddWithValue ( "@_param2", description );
+            cmd.Parameters.AddWithValue ( "@_param3", issue );
 
             await cmd.ExecuteNonQueryAsync ();
         }
 
         private static async Task DeleteMigrationRecord ( int migrationId, NpgsqlConnection connection, NpgsqlTransaction transaction ) {
-            await using var cmd = new NpgsqlCommand ( "DELETE FROM migrations WHERE timestamp = @_param1", connection, transaction );
+            await using var cmd = new NpgsqlCommand ( $"DELETE FROM {MigrationTable} WHERE timestamp = @_param1", connection, transaction );
 
             cmd.Parameters.AddWithValue ( "@_param1", migrationId );
 
@@ -54,10 +70,10 @@ namespace PostgreSQL.Migrations.SqlRunner {
             await using var cmd = new NpgsqlCommand ( migration.UpScript, connection, transaction );
             await cmd.ExecuteNonQueryAsync ();
 
-            await CreateMigrationRecord ( migration.MigrationNumber, migration.Description, connection, transaction );
+            await CreateMigrationRecord ( migration.MigrationNumber, migration.Description, migration.Issue, connection, transaction );
         }
 
-        public async Task RevertMigration ( string connectionString, AvailableMigration migration ) {
+        public async Task RevertMigrationAsync ( string connectionString, AvailableMigration migration ) {
             if ( string.IsNullOrEmpty ( connectionString ) ) throw new ArgumentNullException ( nameof ( connectionString ) );
             if ( !m_connections.ContainsKey ( connectionString ) ) throw new ArgumentException ( $"Transaction for connection string: {connectionString} not was created! Use BeginTransactionAsync method to create it." );
 
@@ -74,7 +90,7 @@ namespace PostgreSQL.Migrations.SqlRunner {
 
             var (connection, transaction) = m_connections[connectionString];
 
-            await using var cmd = new NpgsqlCommand ( "SELECT timestamp FROM migrations ORDER BY timestamp", connection, transaction );
+            await using var cmd = new NpgsqlCommand ( $"SELECT timestamp FROM {MigrationTable} ORDER BY timestamp", connection, transaction );
 
             using var reader = await cmd.ExecuteReaderAsync ();
             var result = new List<int> ();
