@@ -67,7 +67,7 @@ namespace PostgreSQL.Migrations.Runner {
                 var appliedMigrations = await sqlRunner.GetAppliedMigrations ( connectionString );
 
                 var notAppliedMigrations = migrations
-                    .Where ( a => appliedMigrations.Contains ( a.MigrationNumber ) )
+                    .Where ( a => !appliedMigrations.Contains ( a.MigrationNumber ) )
                     .ToArray ();
 
                 foreach ( var notAppliedMigration in notAppliedMigrations ) {
@@ -84,7 +84,8 @@ namespace PostgreSQL.Migrations.Runner {
 
                 var appliedMigrations = await sqlRunner.GetAppliedMigrations ( connectionString );
                 var fullMigration = GetFullMigration ( migration );
-                if ( appliedMigrations.Contains(migration) )  await sqlRunner.RevertMigrationAsync ( connectionString, fullMigration );
+
+                if ( appliedMigrations.Contains ( migration ) ) await sqlRunner.RevertMigrationAsync ( connectionString, fullMigration );
 
                 await sqlRunner.ApplyMigrationAsync ( connectionString, fullMigration );
 
