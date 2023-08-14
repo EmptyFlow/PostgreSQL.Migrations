@@ -50,7 +50,7 @@ namespace PostgreSQL.Migrations.UnitTests.IntegrationTests {
             return hasException;
         }
 
-        [Fact, TestPriority(1)]
+        [Fact, Trait ( "Category", "Integration" ), TestPriority (1)]
         public async Task ApplyMigrationAsync_Complete () {
             //arrange
             var runner = new PostgresSqlRunner ();
@@ -86,7 +86,7 @@ namespace PostgreSQL.Migrations.UnitTests.IntegrationTests {
             );
         }
 
-        [Fact, TestPriority ( 2 )]
+        [Fact, Trait ( "Category", "Integration" ), TestPriority ( 2 )]
         public async Task GetAppliedMigrations_Complete () {
             //arrange
             var runner = new PostgresSqlRunner ();
@@ -100,7 +100,7 @@ namespace PostgreSQL.Migrations.UnitTests.IntegrationTests {
             Assert.Equal ( 1, migrations.First () );
         }
 
-        [Fact, TestPriority ( 3 )]
+        [Fact, Trait ( "Category", "Integration" ), TestPriority ( 3 )]
         public async Task RevertMigrationAsync_Complete () {
             //arrange
             var runner = new PostgresSqlRunner ();

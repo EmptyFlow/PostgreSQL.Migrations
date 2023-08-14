@@ -49,7 +49,7 @@ namespace PostgreSQL.Migrations.UnitTests.IntegrationTests {
             return hasException;
         }
 
-        [Fact, TestPriority ( 1 )]
+        [Fact, Trait ( "Category", "Integration" ), TestPriority ( 1 )]
         public async Task ApplyMigrationsAsync_Complete_InitialRun () {
             //arrange
             var migrationsResolver = A.Fake<IMigrationsResolver> ();
@@ -96,7 +96,7 @@ namespace PostgreSQL.Migrations.UnitTests.IntegrationTests {
             );
         }
 
-        [Fact, TestPriority ( 2 )]
+        [Fact, Trait ( "Category", "Integration" ), TestPriority ( 2 )]
         public async Task ApplyMigrationsAsync_Complete_AdditionalMigration () {
             //arrange
             var migrationsResolver = A.Fake<IMigrationsResolver> ();
@@ -130,7 +130,7 @@ namespace PostgreSQL.Migrations.UnitTests.IntegrationTests {
             );
         }
 
-        [Fact, TestPriority ( 3 )]
+        [Fact, Trait ( "Category", "Integration" ), TestPriority ( 3 )]
         public async Task MigrationRunner_RevertMigrationAsync_Complete () {
             //arrange
             var migrationsResolver = A.Fake<IMigrationsResolver> ();
@@ -177,7 +177,7 @@ namespace PostgreSQL.Migrations.UnitTests.IntegrationTests {
             Assert.True ( tableNotExists2 );
         }
 
-        [Fact, TestPriority ( 4 )]
+        [Fact, Trait ( "Category", "Integration" ), TestPriority ( 4 )]
         public async Task MigrationRunner_RevertAllMigrationsAsync_Complete () {
             //arrange
             var migrationsResolver = A.Fake<IMigrationsResolver> ();
