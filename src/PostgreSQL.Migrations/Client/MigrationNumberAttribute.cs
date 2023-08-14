@@ -6,7 +6,12 @@
 
         public int MigrationNumber { get; set; }
 
-        public MigrationNumberAttribute ( int migrationNumber ) => MigrationNumber = migrationNumber;
+        public string Issue { get; set; }
+
+        public MigrationNumberAttribute ( int migrationNumber, string issue ) {
+            MigrationNumber = migrationNumber;
+            Issue = issue;
+        }
 
     }
 
