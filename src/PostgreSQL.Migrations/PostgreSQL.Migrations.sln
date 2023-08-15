@@ -5,7 +5,9 @@ VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostgreSQL.Migrations", "PostgreSQL.Migrations.csproj", "{DB8F75FC-B3DF-4707-A292-4542B6E06FA5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostgreSQL.Migrations.UnitTests", "..\PostgreSQL.Migrations.UnitTests\PostgreSQL.Migrations.UnitTests.csproj", "{8F97FB7B-1DA9-4318-8150-73D91CD7C9A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostgreSQL.Migrations.UnitTests", "..\PostgreSQL.Migrations.UnitTests\PostgreSQL.Migrations.UnitTests.csproj", "{8F97FB7B-1DA9-4318-8150-73D91CD7C9A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostgreSQL.Migrations.Console", "..\PostgreSQL.Migrations.Console\PostgreSQL.Migrations.Console.csproj", "{AAF067AD-E33C-466D-BD8C-087F42226339}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{8F97FB7B-1DA9-4318-8150-73D91CD7C9A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F97FB7B-1DA9-4318-8150-73D91CD7C9A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F97FB7B-1DA9-4318-8150-73D91CD7C9A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAF067AD-E33C-466D-BD8C-087F42226339}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAF067AD-E33C-466D-BD8C-087F42226339}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAF067AD-E33C-466D-BD8C-087F42226339}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAF067AD-E33C-466D-BD8C-087F42226339}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

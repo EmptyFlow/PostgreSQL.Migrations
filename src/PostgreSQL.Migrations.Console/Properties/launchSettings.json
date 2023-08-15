@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PostgreSQL.Migrations.Console": {
+      "commandName": "Project",
+      "commandLineArgs": "apply -f dsgfsdfdsf"
+    }
+  }
+}
