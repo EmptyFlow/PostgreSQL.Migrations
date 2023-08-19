@@ -7,7 +7,7 @@ namespace PostgreSQL.Migrations.Client {
     /// <summary>
     /// Migration resolve based on decorating classes with <see cref="MigrationNumberAttribute"/> attribute and <see cref="DescriptionAttribute"/> for specify field issue.
     /// </summary>
-    public class MigrationResolverAttribute : IMigrationsResolver {
+    public class MigrationResolverAttribute : IMigrationsAsyncResolver {
 
         public readonly List<Assembly> m_assemblies = new ();
 
@@ -17,7 +17,7 @@ namespace PostgreSQL.Migrations.Client {
         /// Get all available migrations from assemblies specified using the AddAssemblies method.
         /// </summary>
         /// <returns>List of available migrations found in the specified assemblies.</returns>
-        public IEnumerable<AvailableMigration> GetMigrations () {
+        public Task<IEnumerable<AvailableMigration>> GetMigrationsAsync () {
             var result = new List<AvailableMigration> ();
 
             foreach ( Assembly assembly in m_assemblies ) {
@@ -44,7 +44,7 @@ namespace PostgreSQL.Migrations.Client {
                 }
             }
 
-            return result;
+            return Task.FromResult ( result.AsEnumerable () );
         }
 
     }

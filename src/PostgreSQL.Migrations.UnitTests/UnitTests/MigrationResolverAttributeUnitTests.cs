@@ -25,14 +25,14 @@ namespace PostgreSQL.Migrations.UnitTests.UnitTests {
     public class MigrationResolverAttributeUnitTests {
 
         [Fact, Trait ( "Category", "Unit" )]
-        public void GetMigrations_Completed () {
+        public async Task GetMigrations_Completed () {
             //arrange
             var service = new MigrationResolverAttribute ();
 
             service.AddAssemblies ( new List<Assembly> { typeof ( MigrationResolverAttributeUnitTests ).Assembly } );
 
             //act
-            var migrations = service.GetMigrations ();
+            var migrations = await service.GetMigrationsAsync ();
 
             //assert
             Assert.True ( migrations.Count () == 2 );

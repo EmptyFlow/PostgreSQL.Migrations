@@ -52,8 +52,8 @@ namespace PostgreSQL.Migrations.UnitTests.IntegrationTests {
         [Fact, Trait ( "Category", "Integration" ), TestPriority ( 1 )]
         public async Task ApplyMigrationsAsync_Complete_InitialRun () {
             //arrange
-            var migrationsResolver = A.Fake<IMigrationsResolver> ();
-            A.CallTo ( () => migrationsResolver.GetMigrations () ).Returns (
+            var migrationsResolver = A.Fake<IMigrationsAsyncResolver> ();
+            A.CallTo ( () => migrationsResolver.GetMigrationsAsync () ).Returns (
                 new List<AvailableMigration> {
                     new AvailableMigration {
                         MigrationNumber = 1,
@@ -67,7 +67,7 @@ namespace PostgreSQL.Migrations.UnitTests.IntegrationTests {
             );
             var runner = new MigrationRunner ();
             runner.ConnectionString ( m_ConnectionString );
-            runner.LoadMigrations ( migrationsResolver );
+            await runner.LoadMigrationsAsync ( migrationsResolver );
 
             //act
             await runner.ApplyMigrationsAsync ( new PostgresSqlRunner () );
@@ -99,8 +99,8 @@ namespace PostgreSQL.Migrations.UnitTests.IntegrationTests {
         [Fact, Trait ( "Category", "Integration" ), TestPriority ( 2 )]
         public async Task ApplyMigrationsAsync_Complete_AdditionalMigration () {
             //arrange
-            var migrationsResolver = A.Fake<IMigrationsResolver> ();
-            A.CallTo ( () => migrationsResolver.GetMigrations () ).Returns ( new List<AvailableMigration> {
+            var migrationsResolver = A.Fake<IMigrationsAsyncResolver> ();
+            A.CallTo ( () => migrationsResolver.GetMigrationsAsync () ).Returns ( new List<AvailableMigration> {
                 new AvailableMigration {
                     MigrationNumber = 3,
                     UpScript = "CREATE TABLE test3(id integer NOT NULL);"
@@ -108,7 +108,7 @@ namespace PostgreSQL.Migrations.UnitTests.IntegrationTests {
             } );
             var runner = new MigrationRunner ();
             runner.ConnectionString ( m_ConnectionString );
-            runner.LoadMigrations ( migrationsResolver );
+            await runner.LoadMigrationsAsync ( migrationsResolver );
 
             //act
             await runner.ApplyMigrationsAsync ( new PostgresSqlRunner () );
@@ -133,8 +133,8 @@ namespace PostgreSQL.Migrations.UnitTests.IntegrationTests {
         [Fact, Trait ( "Category", "Integration" ), TestPriority ( 3 )]
         public async Task MigrationRunner_RevertMigrationAsync_Complete () {
             //arrange
-            var migrationsResolver = A.Fake<IMigrationsResolver> ();
-            A.CallTo ( () => migrationsResolver.GetMigrations () ).Returns ( new List<AvailableMigration> {
+            var migrationsResolver = A.Fake<IMigrationsAsyncResolver> ();
+            A.CallTo ( () => migrationsResolver.GetMigrationsAsync () ).Returns ( new List<AvailableMigration> {
                 new AvailableMigration {
                     MigrationNumber = 1,
                     DownScript = "DROP TABLE test1;"
@@ -150,7 +150,7 @@ namespace PostgreSQL.Migrations.UnitTests.IntegrationTests {
             } );
             var runner = new MigrationRunner ();
             runner.ConnectionString ( m_ConnectionString );
-            runner.LoadMigrations ( migrationsResolver );
+            await runner.LoadMigrationsAsync ( migrationsResolver );
 
             //act
             await runner.RevertMigrationAsync ( new PostgresSqlRunner (), 2 );
@@ -180,8 +180,8 @@ namespace PostgreSQL.Migrations.UnitTests.IntegrationTests {
         [Fact, Trait ( "Category", "Integration" ), TestPriority ( 4 )]
         public async Task MigrationRunner_RevertAllMigrationsAsync_Complete () {
             //arrange
-            var migrationsResolver = A.Fake<IMigrationsResolver> ();
-            A.CallTo ( () => migrationsResolver.GetMigrations () ).Returns ( new List<AvailableMigration> {
+            var migrationsResolver = A.Fake<IMigrationsAsyncResolver> ();
+            A.CallTo ( () => migrationsResolver.GetMigrationsAsync () ).Returns ( new List<AvailableMigration> {
                 new AvailableMigration {
                     MigrationNumber = 1,
                     DownScript = "DROP TABLE test1;"
@@ -197,7 +197,7 @@ namespace PostgreSQL.Migrations.UnitTests.IntegrationTests {
             } );
             var runner = new MigrationRunner ();
             runner.ConnectionString ( m_ConnectionString );
-            runner.LoadMigrations ( migrationsResolver );
+            await runner.LoadMigrationsAsync ( migrationsResolver );
 
             //act
             await runner.RevertAllMigrationsAsync ( new PostgresSqlRunner () );

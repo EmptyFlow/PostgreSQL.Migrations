@@ -5,9 +5,9 @@ using System.Runtime.Loader;
 
 namespace PostgreSQL.Migrations.Console.Strategies {
 
-    public class StrategyMigrationResolverAttribute {
+    public static class StrategyMigrationResolverAttribute {
 
-        public Task<IEnumerable<AvailableMigration>> Run ( IEnumerable<string> files, string group ) {
+        public static Task<IEnumerable<IMigrationsAsyncResolver>> Run ( IEnumerable<string> files, string group ) {
             var assemblies = new List<Assembly> ();
             foreach ( string file in files ) {
                 var loadedAssembly = AssemblyLoadContext.Default.LoadFromAssemblyPath ( file );
@@ -17,7 +17,7 @@ namespace PostgreSQL.Migrations.Console.Strategies {
             var resolver = new MigrationResolverAttribute ();
             resolver.AddAssemblies ( assemblies );
 
-            return Task.FromResult ( resolver.GetMigrations() );
+            return Task.FromResult ( new List<IMigrationsAsyncResolver> { resolver }.AsEnumerable() );
         }
 
     }

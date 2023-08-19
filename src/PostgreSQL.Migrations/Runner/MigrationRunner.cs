@@ -10,18 +10,6 @@ namespace PostgreSQL.Migrations.Runner {
 
         private readonly List<string> m_connectionStrings = new ();
 
-        public void LoadMigrations ( IMigrationsResolver resolver ) {
-            if ( m_availableMigrations.Any () ) m_availableMigrations.Clear ();
-
-            m_availableMigrations.AddRange ( resolver.GetMigrations () );
-        }
-
-        public void LoadMigrations ( IEnumerable<IMigrationsResolver> resolvers ) {
-            if ( m_availableMigrations.Any () ) m_availableMigrations.Clear ();
-
-            foreach ( var resolver in resolvers ) m_availableMigrations.AddRange ( resolver.GetMigrations () );
-        }
-
         public async Task LoadMigrationsAsync ( IMigrationsAsyncResolver resolver ) {
             if ( m_availableMigrations.Any () ) m_availableMigrations.Clear ();
 
