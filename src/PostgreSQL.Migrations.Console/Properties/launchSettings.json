@@ -2,7 +2,7 @@
   "profiles": {
     "PostgreSQL.Migrations.Console": {
       "commandName": "Project",
-      "commandLineArgs": "apply -f dsgfsdfdsf"
+      "commandLineArgs": "apply -f C:\\work\\Repositories\\ONeil\\ONeil\\ONeil.Migrations\\bin\\Debug\\net7.0\\ONeil.Migrations.dll -c Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=migrationtests"
     }
   }
 }
