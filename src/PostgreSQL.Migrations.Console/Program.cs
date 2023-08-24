@@ -5,29 +5,33 @@ using PostgreSQL.Migrations.Console.Strategies;
 using PostgreSQL.Migrations.Runner;
 using PostgreSQL.Migrations.SqlRunner;
 
-Dependencies.RegisterMigrations();
+Dependencies.RegisterMigrations ();
 
-await Parser.Default.ParseArguments<ApplyOptions> ( args )
-    .MapResult (
-      ApplyMigrationsToDatabase,
-      HandleParseError
-    );
+var parser = Parser.Default.ParseArguments<ApplyOptions, RevertOptions> ( args );
+
+await parser.WithParsedAsync<ApplyOptions> ( ApplyMigrationsToDatabase );
+await parser.WithParsedAsync<RevertOptions> ( RevertMigrationsToDatabase );
+await parser.WithNotParsedAsync ( HandleParseError );
 
 static async Task<int> ApplyMigrationsToDatabase ( ApplyOptions options ) {
-    var migrationResolvers = new List<IMigrationsAsyncResolver> ();
+    var migrationResolvers = await GetMigrationResolvers ( options.Files, options.Group, options.Strategy );
 
-    switch ( options.Strategy ) {
-        case "MigrationResolverAttribute":
-            migrationResolvers.AddRange ( await StrategyMigrationResolverAttribute.Run ( options.Files, options.Group ) );
-            break;
-        default:
-            break;
-    }
+    var runner = await GetRunner ( options.ConnectionStrings, migrationResolvers );
 
-    var runner = new MigrationRunner ();
-    await runner.LoadMigrationsAsync ( migrationResolvers );
-    runner.ConnectionString ( options.ConnectionStrings );
+    Console.WriteLine ( $"Starting operation Apply..." );
     await runner.ApplyMigrationsAsync ( Dependencies.GetService<ISqlRunner> () );
+    Console.WriteLine ( $"Operation Apply is completed!" );
+
+    return 0;
+}
+
+static async Task<int> RevertMigrationsToDatabase ( RevertOptions options ) {
+    var migrationResolvers = await GetMigrationResolvers ( options.Files, options.Group, options.Strategy );
+    var runner = await GetRunner ( options.ConnectionStrings, migrationResolvers );
+
+    Console.WriteLine ( $"Starting operation Revert..." );
+    await runner.RevertMigrationAsync ( Dependencies.GetService<ISqlRunner> (), options.Migration );
+    Console.WriteLine ( $"Operation Revert is completed!" );
 
     return 0;
 }
@@ -41,4 +45,28 @@ static Task<int> HandleParseError ( IEnumerable<Error> errors ) {
     if ( errors.IsHelp () ) return Task.FromResult ( 0 );
 
     return Task.FromResult ( 1 );
+}
+
+static async Task<List<IMigrationsAsyncResolver>> GetMigrationResolvers ( IEnumerable<string> files, string group, string strategy ) {
+    Console.WriteLine ( $"Trying to use a strategy: {strategy}..." );
+    var migrationResolvers = new List<IMigrationsAsyncResolver> ();
+
+    switch ( strategy ) {
+        case "MigrationResolverAttribute":
+            migrationResolvers.AddRange ( await StrategyMigrationResolverAttribute.Run ( files, group ) );
+            break;
+        default:
+            break;
+    }
+
+    Console.WriteLine ( $"Strategy {strategy} applied!" );
+
+    return migrationResolvers;
+}
+
+static async Task<MigrationRunner> GetRunner ( IEnumerable<string> connectionStrings, List<IMigrationsAsyncResolver> migrationResolvers ) {
+    var runner = new MigrationRunner ();
+    await runner.LoadMigrationsAsync ( migrationResolvers );
+    runner.ConnectionString ( connectionStrings );
+    return runner;
 }
