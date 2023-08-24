@@ -10,7 +10,6 @@ namespace PostgreSQL.Migrations.Console {
         public static void RegisterMigrations() {
             m_serviceCollection = new ServiceCollection ()
                 .AddSingleton<ISqlRunner, PostgresSqlRunner> ()
-                //.AddSingleton<IBarService, BarService> ()
                 .BuildServiceProvider ();
         }
 
