@@ -1,7 +1,6 @@
 ﻿using CommandLine;
 using PostgreSQL.Migrations.Console;
 using PostgreSQL.Migrations.Console.Options;
-using PostgreSQL.Migrations.Console.Strategies;
 using PostgreSQL.Migrations.Runner;
 using PostgreSQL.Migrations.SqlRunner;
 
@@ -14,7 +13,7 @@ await parser.WithParsedAsync<RevertOptions> ( RevertMigrationsToDatabase );
 await parser.WithNotParsedAsync ( HandleParseError );
 
 static async Task<int> ApplyMigrationsToDatabase ( ApplyOptions options ) {
-    var migrationResolvers = await GetMigrationResolvers ( options.Files, options.Group, options.Strategy );
+    var migrationResolvers = await MigrationResolver.GetResolvers ( options.Files, options.Group, options.Strategy );
 
     var runner = await GetRunner ( options.ConnectionStrings, migrationResolvers );
 
@@ -26,7 +25,7 @@ static async Task<int> ApplyMigrationsToDatabase ( ApplyOptions options ) {
 }
 
 static async Task<int> RevertMigrationsToDatabase ( RevertOptions options ) {
-    var migrationResolvers = await GetMigrationResolvers ( options.Files, options.Group, options.Strategy );
+    var migrationResolvers = await MigrationResolver.GetResolvers ( options.Files, options.Group, options.Strategy );
     var runner = await GetRunner ( options.ConnectionStrings, migrationResolvers );
 
     Console.WriteLine ( $"Starting operation Revert..." );
@@ -45,23 +44,6 @@ static Task<int> HandleParseError ( IEnumerable<Error> errors ) {
     if ( errors.IsHelp () ) return Task.FromResult ( 0 );
 
     return Task.FromResult ( 1 );
-}
-
-static async Task<List<IMigrationsAsyncResolver>> GetMigrationResolvers ( IEnumerable<string> files, string group, string strategy ) {
-    Console.WriteLine ( $"Trying to use a strategy: {strategy}..." );
-    var migrationResolvers = new List<IMigrationsAsyncResolver> ();
-
-    switch ( strategy ) {
-        case "MigrationResolverAttribute":
-            migrationResolvers.AddRange ( await StrategyMigrationResolverAttribute.Run ( files, group ) );
-            break;
-        default:
-            break;
-    }
-
-    Console.WriteLine ( $"Strategy {strategy} applied!" );
-
-    return migrationResolvers;
 }
 
 static async Task<MigrationRunner> GetRunner ( IEnumerable<string> connectionStrings, List<IMigrationsAsyncResolver> migrationResolvers ) {
