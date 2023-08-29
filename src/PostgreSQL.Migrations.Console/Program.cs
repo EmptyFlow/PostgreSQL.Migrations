@@ -6,10 +6,11 @@ using PostgreSQL.Migrations.SqlRunner;
 
 Dependencies.RegisterMigrations ();
 
-var parser = Parser.Default.ParseArguments<ApplyOptions, RevertOptions> ( args );
+var parser = Parser.Default.ParseArguments<ApplyOptions, RevertOptions, ForceRevertOptions> ( args );
 
 await parser.WithParsedAsync<ApplyOptions> ( ApplyMigrationsToDatabase );
 await parser.WithParsedAsync<RevertOptions> ( RevertMigrationsToDatabase );
+await parser.WithParsedAsync<ForceRevertOptions> ( ForceRevertMigrationInDatabase );
 await parser.WithNotParsedAsync ( HandleParseError );
 
 static async Task<int> ApplyMigrationsToDatabase ( ApplyOptions options ) {
@@ -31,6 +32,17 @@ static async Task<int> RevertMigrationsToDatabase ( RevertOptions options ) {
     Console.WriteLine ( $"Starting operation Revert..." );
     await runner.RevertMigrationAsync ( Dependencies.GetService<ISqlRunner> (), options.Migration );
     Console.WriteLine ( $"Operation Revert is completed!" );
+
+    return 0;
+}
+
+static async Task<int> ForceRevertMigrationInDatabase ( ForceRevertOptions options ) {
+    var migrationResolvers = await MigrationResolver.GetResolvers ( options.Files, options.Group, options.Strategy );
+    var runner = await GetRunner ( options.ConnectionStrings, migrationResolvers );
+
+    Console.WriteLine ( $"Starting operation Force Revert..." );
+    await runner.ForceMigrationAsync ( Dependencies.GetService<ISqlRunner> (), options.Migration );
+    Console.WriteLine ( $"Operation Force Revert is completed!" );
 
     return 0;
 }
