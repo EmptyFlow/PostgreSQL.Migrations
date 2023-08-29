@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostgreSQL.Migrations", "Po
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostgreSQL.Migrations.UnitTests", "..\PostgreSQL.Migrations.UnitTests\PostgreSQL.Migrations.UnitTests.csproj", "{8F97FB7B-1DA9-4318-8150-73D91CD7C9A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostgreSQL.Migrations.Console", "..\PostgreSQL.Migrations.Console\PostgreSQL.Migrations.Console.csproj", "{AAF067AD-E33C-466D-BD8C-087F42226339}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostgreSQL.Migrations.Console", "..\PostgreSQL.Migrations.Console\PostgreSQL.Migrations.Console.csproj", "{AAF067AD-E33C-466D-BD8C-087F42226339}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
