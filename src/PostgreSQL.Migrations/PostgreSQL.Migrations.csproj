@@ -15,9 +15,14 @@
     <PackageTags>migrations;postgressql</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Version>0.0.1</Version>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="..\..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
