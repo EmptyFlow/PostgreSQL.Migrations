@@ -9,9 +9,13 @@ namespace PostgreSQL.Migrations.Client {
     /// </summary>
     public class MigrationResolverAttribute : IMigrationsAsyncResolver {
 
-        public readonly List<Assembly> m_assemblies = new ();
+        private readonly List<Assembly> m_assemblies = new ();
+
+        private string m_group = "";
 
         public void AddAssemblies ( IEnumerable<Assembly> assemblies ) => m_assemblies.AddRange ( assemblies );
+
+        public void SetGroup(string group) => m_group = group;
 
         /// <summary>
         /// Get all available migrations from assemblies specified using the AddAssemblies method.
@@ -32,11 +36,14 @@ namespace PostgreSQL.Migrations.Client {
                     var script = Activator.CreateInstance ( type ) as MigrationScript;
                     if ( script == null ) continue;
 
+                    if ( !CheckInGroup ( migrationAttribute.Group ) ) continue;
+
                     result.Add (
                         new AvailableMigration {
                             MigrationNumber = migrationAttribute.MigrationNumber,
                             Issue = migrationAttribute.Issue,
                             Description = description,
+                            Group = migrationAttribute.Group,
                             UpScript = script.Up (),
                             DownScript = script.Down (),
                         }
@@ -45,6 +52,14 @@ namespace PostgreSQL.Migrations.Client {
             }
 
             return Task.FromResult ( result.AsEnumerable () );
+        }
+
+        private bool CheckInGroup ( string group ) {
+            if ( string.IsNullOrEmpty ( m_group ) ) return true;
+
+            var groups = group.Split ( "," ).Select ( a => a.Trim ().ToLowerInvariant () );
+            var searchGroups = m_group.Split ( "," ).Select ( a => a.Trim ().ToLowerInvariant () );
+            return groups.Intersect ( searchGroups ).Any ();
         }
 
     }

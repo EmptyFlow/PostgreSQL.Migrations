@@ -4,7 +4,7 @@ using Xunit;
 
 namespace PostgreSQL.Migrations.UnitTests.UnitTests {
 
-    [MigrationNumber ( 1, "http://issue/1" )]
+    [MigrationNumber ( 1, "http://issue/1", "firstGroup" )]
     public class InitialMigration : MigrationScript {
 
         public override string Down () => "initial migration down script";
@@ -13,7 +13,7 @@ namespace PostgreSQL.Migrations.UnitTests.UnitTests {
 
     }
 
-    [MigrationNumber ( 2, "http://issue/2" )]
+    [MigrationNumber ( 2, "http://issue/2", "LastGroup, Lalala" )]
     public class SecondMigration : MigrationScript {
 
         public override string Down () => "second migration down script";
@@ -48,6 +48,64 @@ namespace PostgreSQL.Migrations.UnitTests.UnitTests {
             Assert.Equal ( "http://issue/2", secondMigration.Issue );
             Assert.Equal ( "second migration up script", secondMigration.UpScript );
             Assert.Equal ( "second migration down script", secondMigration.DownScript );
+        }
+
+        [Fact, Trait ( "Category", "Unit" )]
+        public async Task GetMigrations_GroupFilter_SingleGroup_Completed () {
+            //arrange
+            var service = new MigrationResolverAttribute ();
+
+            service.AddAssemblies ( new List<Assembly> { typeof ( MigrationResolverAttributeUnitTests ).Assembly } );
+            service.SetGroup ( "lASTgrouP" );
+
+            //act
+            var migrations = await service.GetMigrationsAsync ();
+
+            //assert
+            Assert.True ( migrations.Count () == 1 );
+            var firstMigration = migrations.FirstOrDefault ( a => a.MigrationNumber == 2 );
+            Assert.NotNull ( firstMigration );
+            Assert.Equal ( 2, firstMigration.MigrationNumber );
+        }
+
+        [Fact, Trait ( "Category", "Unit" )]
+        public async Task GetMigrations_GroupFilter_MultipleGroups_Completed () {
+            //arrange
+            var service = new MigrationResolverAttribute ();
+
+            service.AddAssemblies ( new List<Assembly> { typeof ( MigrationResolverAttributeUnitTests ).Assembly } );
+            service.SetGroup ( "lAsTgrouP, Firstgroup" );
+
+            //act
+            var migrations = await service.GetMigrationsAsync ();
+
+            //assert
+            Assert.True ( migrations.Count () == 2 );
+            var firstMigration = migrations.FirstOrDefault ( a => a.MigrationNumber == 1 );
+            Assert.Equal ( 1, firstMigration.MigrationNumber );
+            var secondMigration = migrations.FirstOrDefault ( a => a.MigrationNumber == 2 );
+            Assert.NotNull ( secondMigration );
+            Assert.Equal ( 2, secondMigration.MigrationNumber );
+        }
+
+        [Fact, Trait ( "Category", "Unit" )]
+        public async Task GetMigrations_GroupFilter_MultipleGroups_SecondGroupInAttribute_Completed () {
+            //arrange
+            var service = new MigrationResolverAttribute ();
+
+            service.AddAssemblies ( new List<Assembly> { typeof ( MigrationResolverAttributeUnitTests ).Assembly } );
+            service.SetGroup ( "lalala, Firstgroup" );
+
+            //act
+            var migrations = await service.GetMigrationsAsync ();
+
+            //assert
+            Assert.True ( migrations.Count () == 2 );
+            var firstMigration = migrations.FirstOrDefault ( a => a.MigrationNumber == 1 );
+            Assert.Equal ( 1, firstMigration.MigrationNumber );
+            var secondMigration = migrations.FirstOrDefault ( a => a.MigrationNumber == 2 );
+            Assert.NotNull ( secondMigration );
+            Assert.Equal ( 2, secondMigration.MigrationNumber );
         }
 
     }

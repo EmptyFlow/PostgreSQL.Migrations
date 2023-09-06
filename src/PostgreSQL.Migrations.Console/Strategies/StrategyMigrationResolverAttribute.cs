@@ -16,6 +16,7 @@ namespace PostgreSQL.Migrations.Console.Strategies {
 
             var resolver = new MigrationResolverAttribute ();
             resolver.AddAssemblies ( assemblies );
+            resolver.SetGroup ( group );
 
             return Task.FromResult ( new List<IMigrationsAsyncResolver> { resolver }.AsEnumerable() );
         }
