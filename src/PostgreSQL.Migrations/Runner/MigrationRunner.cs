@@ -4,11 +4,25 @@ using PostgreSQL.Migrations.SqlRunner;
 namespace PostgreSQL.Migrations.Runner {
 
 
-    public class MigrationRunner {
+    public sealed class MigrationRunner {
+
+        private const string EndOperationMessage = "complete";
 
         private readonly List<AvailableMigration> m_availableMigrations = new ();
 
         private readonly List<string> m_connectionStrings = new ();
+
+        private readonly ConsoleMigrationRunnerLogger m_consoleLogger = new ();
+
+        private readonly WeakReference<IMigrationRunnerLogger>? m_logger;
+
+        public MigrationRunner ( IMigrationRunnerLogger? logger = default ) {
+            m_logger = new WeakReference<IMigrationRunnerLogger> ( logger != default ? logger : m_consoleLogger );
+        }
+
+        private void Log ( string message ) {
+            if ( m_logger!.TryGetTarget ( out var logger ) ) logger.Log ( message );
+        }
 
         public async Task LoadMigrationsAsync ( IMigrationsAsyncResolver resolver ) {
             if ( m_availableMigrations.Any () ) m_availableMigrations.Clear ();
@@ -45,11 +59,17 @@ namespace PostgreSQL.Migrations.Runner {
         public async Task ApplyMigrationsAsync ( ISqlRunner sqlRunner ) {
             if ( !m_availableMigrations.Any () ) return;
 
+            Log ( "Operation: Apply migrations" );
+
             var migrations = m_availableMigrations
                 .OrderBy ( a => a.MigrationNumber )
                 .ToList ();
 
+            Log ( $"Founded migrations: {migrations.Count}" );
+
             foreach ( var connectionString in m_connectionStrings ) {
+                Log ( $"Applied for connection string: {connectionString}" );
+
                 await sqlRunner.BeginTransactionAsync ( connectionString );
 
                 var appliedMigrations = await sqlRunner.GetAppliedMigrations ( connectionString );
@@ -59,26 +79,42 @@ namespace PostgreSQL.Migrations.Runner {
                     .ToArray ();
 
                 foreach ( var notAppliedMigration in notAppliedMigrations ) {
+                    Log ( $"Started applying migration with number {notAppliedMigration.MigrationNumber}" );
                     await sqlRunner.ApplyMigrationAsync ( connectionString, notAppliedMigration );
+                    Log ( $"Finished applying migration with number {notAppliedMigration.MigrationNumber}" );
                 }
 
                 await sqlRunner.CommitTransactionAsync ( connectionString );
             }
+
+            Log ( EndOperationMessage );
         }
 
         public async Task ForceMigrationAsync ( ISqlRunner sqlRunner, int migration ) {
+            Log ( "Operation: Force migration" );
+
             foreach ( var connectionString in m_connectionStrings ) {
+                Log ( $"Applied for connection string: {connectionString}" );
+
                 await sqlRunner.BeginTransactionAsync ( connectionString );
 
                 var appliedMigrations = await sqlRunner.GetAppliedMigrations ( connectionString );
                 var fullMigration = GetFullMigration ( migration );
 
-                if ( appliedMigrations.Contains ( migration ) ) await sqlRunner.RevertMigrationAsync ( connectionString, fullMigration );
+                if ( appliedMigrations.Contains ( migration ) ) {
+                    Log ( $"Started reverting migration with number {fullMigration.MigrationNumber}" );
+                    await sqlRunner.RevertMigrationAsync ( connectionString, fullMigration );
+                    Log ( $"Finished reverting migration with number {fullMigration.MigrationNumber}" );
+                }
 
+                Log ( $"Started applying migration with number {fullMigration.MigrationNumber}" );
                 await sqlRunner.ApplyMigrationAsync ( connectionString, fullMigration );
+                Log ( $"Finished applying migration with number {fullMigration.MigrationNumber}" );
 
                 await sqlRunner.CommitTransactionAsync ( connectionString );
             }
+
+            Log ( EndOperationMessage );
         }
 
         private AvailableMigration GetFullMigration ( int migration ) {
@@ -87,7 +123,11 @@ namespace PostgreSQL.Migrations.Runner {
         }
 
         public async Task RevertMigrationAsync ( ISqlRunner sqlRunner, int migration ) {
+            Log ( "Operation: Revert migrations" );
+
             foreach ( var connectionString in m_connectionStrings ) {
+                Log ( $"Applied for connection string: {connectionString}" );
+
                 await sqlRunner.BeginTransactionAsync ( connectionString );
 
                 var appliedMigrations = await sqlRunner.GetAppliedMigrations ( connectionString );
@@ -97,17 +137,23 @@ namespace PostgreSQL.Migrations.Runner {
                     if ( appliedMigration < migration ) break;
 
                     if ( migrations.TryGetValue ( appliedMigration, out var fullAppliedMigration ) ) {
+                        Log ( $"Started reverting migration with number {fullAppliedMigration.MigrationNumber}" );
                         await sqlRunner.RevertMigrationAsync ( connectionString, migrations[appliedMigration] );
+                        Log ( $"Finished reverting migration with number {fullAppliedMigration.MigrationNumber}" );
                     } else {
-                        throw new Exception ( $"Migrations with number {appliedMigration} was applied but don't contains apropriate item in available migrations!" );
+                        Log ( $"Migrations with number {appliedMigration} was applied but don't contains apropriate item in available migrations!" );
                     }
                 }
 
                 await sqlRunner.CommitTransactionAsync ( connectionString );
             }
+
+            Log ( EndOperationMessage );
         }
 
         public async Task RevertAllMigrationsAsync ( ISqlRunner sqlRunner ) {
+            Log ( "Operation: Revert all migrations" );
+
             foreach ( var connectionString in m_connectionStrings ) {
                 await sqlRunner.BeginTransactionAsync ( connectionString );
 
@@ -115,15 +161,19 @@ namespace PostgreSQL.Migrations.Runner {
                 var migrations = m_availableMigrations.ToDictionary ( a => a.MigrationNumber );
 
                 foreach ( var appliedMigration in appliedMigrations.OrderByDescending ( a => a ) ) {
-                    if ( migrations.TryGetValue( appliedMigration, out var fullAppliedMigration ) ) {
+                    if ( migrations.TryGetValue ( appliedMigration, out var fullAppliedMigration ) ) {
+                        Log ( $"Started reverting migration with number {fullAppliedMigration.MigrationNumber}" );
                         await sqlRunner.RevertMigrationAsync ( connectionString, migrations[appliedMigration] );
+                        Log ( $"Finished reverting migration with number {fullAppliedMigration.MigrationNumber}" );
                     } else {
-                        throw new Exception ( $"Migrations with number {appliedMigration} was applied but don't contains in available migrations!" );
+                        Log ( $"Migrations with number {appliedMigration} was applied but don't contains in available migrations!" );
                     }
                 }
 
                 await sqlRunner.CommitTransactionAsync ( connectionString );
             }
+
+            Log ( EndOperationMessage );
         }
 
     }
