@@ -7,3 +7,7 @@ Library for performing migrations in PostgreSQL database.
 - Allowed fragmentation in migration numbers
 - Filtering migrations by groups (by clients, database instances and so on)
 - Cross-platform console application for performing migration
+
+## Documentation
+You can check the [link](https://emptyflow.github.io/PostgreSQL.Migrations/) for read latest documentation.
+  
