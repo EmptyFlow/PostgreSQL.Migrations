@@ -1,0 +1,9 @@
+site_name: PostgreSQL.Migrations
+site_author: 'Roman Vladimirov'
+docs_dir: docs/
+repo_name: 'EmptyFlow/PostgreSQL.Migrations'
+repo_url: 'https://github.com/EmptyFlow/PostgreSQL.Migrations'
+nav:
+  - Home: index.md
+  - Library API: library.md
+  - Console Application: console.md
