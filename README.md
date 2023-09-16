@@ -1,5 +1,5 @@
 # PostgreSQL.Migrations
-Library for performing migrations in PostgreSQL database.
+Tooling for performing migrations in PostgreSQL database.
 
 ## Features
 - Fully managed C# solution (can be used as part of your project, integration tests, console application, CI and in any other way you need)
