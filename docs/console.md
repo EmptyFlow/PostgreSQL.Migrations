@@ -38,3 +38,17 @@ For check available options use command `force-revert --help`.
 ## Strategies
 
 ### MigrationResolverAttribute
+Migrations are organized into C# classes.
+Each class inherits from the `MigrationScript` class from the `PostgreSQL.Migrations` assembly and decorated `MigrationNumber` attribute.
+You must implement the `Up` and `Down` methods, where `Up` returns the SQL script that will be executed during the `Apply operation`, and `Down` returns the SQL script that will be executed during the `Revert operation`.
+Optional you can fill fields `Issue` (to bound the issue from bugtracker) and `Group` (to bound migration with group or groups).
+```csharp
+[MigrationNumber ( 1, "http://issue/1", "firstGroup" )]
+public class InitialMigration : MigrationScript {
+
+    public override string Down () => "DROP TABLE test;";
+
+    public override string Up () => "CREATE TABLE test(id int4);";
+
+}
+```
