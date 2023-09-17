@@ -1,5 +1,5 @@
 # PostgreSQL.Migrations
-Library for performing migrations in PostgreSQL database.
+Tooling for performing migrations in PostgreSQL database.
 
 ## Features
 - Fully managed C# solution (can be used as part of your project, integration tests, console application, CI and in any other way you need)
@@ -7,3 +7,7 @@ Library for performing migrations in PostgreSQL database.
 - Allowed fragmentation in migration numbers
 - Filtering migrations by groups (by clients, database instances and so on)
 - Cross-platform console application for performing migration
+
+## Documentation
+You can check the [link](https://emptyflow.github.io/PostgreSQL.Migrations/) for read latest documentation.
+  
