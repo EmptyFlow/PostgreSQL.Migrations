@@ -9,7 +9,13 @@ namespace PostgreSQL.Migrations.Console {
 
         static async Task<MigrationRunner> GetRunner ( IEnumerable<string> connectionStrings, List<IMigrationsAsyncResolver> migrationResolvers ) {
             var runner = new MigrationRunner ();
+
+            SystemConsole.WriteLine ( $"Started loading migrations..." );
+
             await runner.LoadMigrationsAsync ( migrationResolvers );
+
+            SystemConsole.WriteLine ( $"Migrations loaded. Founded {runner.CountMigrations} migrations." );
+
             runner.ConnectionString ( connectionStrings );
             return runner;
         }

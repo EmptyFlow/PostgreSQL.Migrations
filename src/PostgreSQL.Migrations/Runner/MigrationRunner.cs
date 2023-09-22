@@ -18,6 +18,8 @@ namespace PostgreSQL.Migrations.Runner {
             m_logger = new WeakReference<IMigrationRunnerLogger> ( logger != default ? logger : m_consoleLogger );
         }
 
+        public int CountMigrations() => m_availableMigrations.Count;
+
         private void Log ( string message ) {
             if ( m_logger!.TryGetTarget ( out var logger ) ) logger.Log ( message );
         }

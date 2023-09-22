@@ -15,7 +15,7 @@ namespace PostgreSQL.Migrations.Client {
 
         public void AddAssemblies ( IEnumerable<Assembly> assemblies ) => m_assemblies.AddRange ( assemblies );
 
-        public void SetGroup(string group) => m_group = group;
+        public void SetGroup ( string group ) => m_group = group;
 
         /// <summary>
         /// Get all available migrations from assemblies specified using the AddAssemblies method.
