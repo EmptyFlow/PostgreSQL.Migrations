@@ -6,8 +6,6 @@ namespace PostgreSQL.Migrations.Runner {
 
     public sealed class MigrationRunner {
 
-        private const string EndOperationMessage = "complete";
-
         private readonly List<AvailableMigration> m_availableMigrations = new ();
 
         private readonly List<string> m_connectionStrings = new ();
@@ -86,8 +84,6 @@ namespace PostgreSQL.Migrations.Runner {
 
                 await sqlRunner.CommitTransactionAsync ( connectionString );
             }
-
-            Log ( EndOperationMessage );
         }
 
         public async Task ForceMigrationAsync ( ISqlRunner sqlRunner, int migration ) {
@@ -113,8 +109,6 @@ namespace PostgreSQL.Migrations.Runner {
 
                 await sqlRunner.CommitTransactionAsync ( connectionString );
             }
-
-            Log ( EndOperationMessage );
         }
 
         private AvailableMigration GetFullMigration ( int migration ) {
@@ -147,8 +141,6 @@ namespace PostgreSQL.Migrations.Runner {
 
                 await sqlRunner.CommitTransactionAsync ( connectionString );
             }
-
-            Log ( EndOperationMessage );
         }
 
         public async Task RevertAllMigrationsAsync ( ISqlRunner sqlRunner ) {
@@ -172,8 +164,6 @@ namespace PostgreSQL.Migrations.Runner {
 
                 await sqlRunner.CommitTransactionAsync ( connectionString );
             }
-
-            Log ( EndOperationMessage );
         }
 
     }
