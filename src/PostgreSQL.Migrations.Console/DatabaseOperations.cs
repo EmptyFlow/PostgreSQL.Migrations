@@ -14,7 +14,7 @@ namespace PostgreSQL.Migrations.Console {
 
             await runner.LoadMigrationsAsync ( migrationResolvers );
 
-            SystemConsole.WriteLine ( $"Migrations loaded. Founded {runner.CountMigrations} migrations." );
+            SystemConsole.WriteLine ( $"Migrations loaded. Founded {runner.CountMigrations()} migrations." );
 
             runner.ConnectionString ( connectionStrings );
             return runner;
