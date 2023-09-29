@@ -6,14 +6,14 @@
 
         public int MigrationNumber { get; init; }
 
-        public string Issue { get; init; }
+        public string Issue { get; init; } = "";
 
-        public string Group { get; init; }
+        public string Group { get; init; } = "";
 
-        public MigrationNumberAttribute ( int migrationNumber, string issue, string group = "" ) {
+        public MigrationNumberAttribute ( int migrationNumber, string issue = "", string group = "" ) {
             MigrationNumber = migrationNumber;
-            Issue = issue;
-            Group = group;
+            Issue = issue ?? "";
+            Group = group ?? "";
         }
 
     }
