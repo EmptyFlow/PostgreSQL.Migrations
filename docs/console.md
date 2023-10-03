@@ -35,6 +35,23 @@ For check available options use command `force-revert --help`.
 * `-s [string] or --strategy [string]` - [default = MigrationResolverAttribute] Select strategy for read migrations.
 * `-g  [string] or --group [string]` - If you specify some group or groups (separated by commas), migrations will be filtered by these groups
 
+### apply-profile
+For check available options use command `apply --help`.    
+
+* `-p [file] or --profile [file]` - Path to file contains profile (check `Profile file` section below).
+
+### revert-profile
+For check available options use command `revert --help`.    
+
+* `-m [number] or --migration [number]` - [required] The parameter specifies the number of the migration to which you want to roll back the changes
+* `-p [file] or --profile [file]` - Path to file contains profile (check `Profile file` section below).
+
+### force-revert-profile
+For check available options use command `force-revert --help`.    
+
+* `-m [number] or --migration [number]` - [required] The parameter specifies the number of the migration which will be reverted (if it was applied before) and after it applied once again
+* `-p [file] or --profile [file]` - Path to file contains profile (check `Profile file` section below).
+
 ## Strategies
 
 ### MigrationResolverAttribute
@@ -52,3 +69,25 @@ public class InitialMigration : MigrationScript {
 
 }
 ```
+
+## Profile file
+A profile file is a simple text file containing a few lines. A profile file is an alternative way to populate some parameters such as connection strings, files, strategy, and group for operations `apply`, `revert`, `force-revert` etc.
+Format in profile file as follow:
+```
+[name of parameter] [value of parameter]
+```
+### Parameters
+* `constring` - [miltiple] for fill connection string.
+* `file` - [miltiple] for fill connection string.
+* `strategy` - for fill `strategy` parameter.
+* `group` -  for fill `group` parameter.
+### Example
+```
+constring Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=firstdatabase
+constring Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=seconddatabase
+file ~/project1/Migrations1.dll
+file ~/project2/Migrations2.dll
+strategy MigrationResolverAttribute
+group ProductionMigrations
+```
+
