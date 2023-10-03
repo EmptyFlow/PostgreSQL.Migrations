@@ -7,6 +7,9 @@ To download binary build please check the [github repository](https://github.com
 * `apply [options]` - Apply all new migrations to database(s)
 * `revert [options]` - Revert database to state before migration specified in parameter
 * `force-revert [options]` - Revert only one migration specified in parameter
+* `apply-profile [options]` - Apply all new migrations to database(s). Most options readed from profile file.
+* `revert-profile [options]` - Revert database to state before migration specified in parameter. Most options are read from the profile file.
+* `force-revert-profile [options]` - Revert only one migration specified in parameter. Most options are read from the profile file.
 * `version` - Display version information
 
 ### apply
@@ -72,6 +75,7 @@ public class InitialMigration : MigrationScript {
 
 ## Profile file
 A profile file is a simple text file containing a few lines. A profile file is an alternative way to populate some parameters such as connection strings, files, strategy, and group for operations `apply`, `revert`, `force-revert` etc.
+If profile file not is not specified then will be try to read `migrationprofile` in current directory.
 Format in profile file as follow:
 ```
 [name of parameter] [value of parameter]
