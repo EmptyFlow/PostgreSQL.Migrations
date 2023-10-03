@@ -1,5 +1,6 @@
 ﻿using Npgsql;
 using PostgreSQL.Migrations.SqlRunner;
+using System.Text.RegularExpressions;
 
 namespace PostgreSQL.Migrations.Runner {
 
@@ -18,10 +19,21 @@ namespace PostgreSQL.Migrations.Runner {
             m_logger = new WeakReference<IMigrationRunnerLogger> ( logger != default ? logger : m_consoleLogger );
         }
 
-        public int CountMigrations() => m_availableMigrations.Count;
+        public int CountMigrations () => m_availableMigrations.Count;
 
         private void Log ( string message ) {
             if ( m_logger!.TryGetTarget ( out var logger ) ) logger.Log ( message );
+        }
+
+        private static string HidePasswordInConnectionString ( string connectionString ) {
+
+            var match = Regex.Match ( connectionString, "Password=(.){0,};" );
+            if ( match != null ) return connectionString.Replace ( match.Value, "Password=*****;" );
+
+            var endLineMatch = Regex.Match ( connectionString, "Password=(.){0,}" );
+            if ( endLineMatch != null ) return connectionString.Replace ( endLineMatch.Value, "Password=*****" );
+
+            return connectionString;
         }
 
         public async Task LoadMigrationsAsync ( IMigrationsAsyncResolver resolver ) {
@@ -68,7 +80,7 @@ namespace PostgreSQL.Migrations.Runner {
             Log ( $"Founded migrations: {migrations.Count}" );
 
             foreach ( var connectionString in m_connectionStrings ) {
-                Log ( $"Applied for connection string: {connectionString}" );
+                Log ( $"Applied for connection string: {HidePasswordInConnectionString ( connectionString )}" );
 
                 await sqlRunner.BeginTransactionAsync ( connectionString );
 
@@ -92,7 +104,7 @@ namespace PostgreSQL.Migrations.Runner {
             Log ( "Operation: Force migration" );
 
             foreach ( var connectionString in m_connectionStrings ) {
-                Log ( $"Applied for connection string: {connectionString}" );
+                Log ( $"Applied for connection string: {HidePasswordInConnectionString ( connectionString )}" );
 
                 await sqlRunner.BeginTransactionAsync ( connectionString );
 
@@ -122,7 +134,7 @@ namespace PostgreSQL.Migrations.Runner {
             Log ( "Operation: Revert migrations" );
 
             foreach ( var connectionString in m_connectionStrings ) {
-                Log ( $"Applied for connection string: {connectionString}" );
+                Log ( $"Applied for connection string: {HidePasswordInConnectionString ( connectionString )}" );
 
                 await sqlRunner.BeginTransactionAsync ( connectionString );
 
@@ -149,6 +161,8 @@ namespace PostgreSQL.Migrations.Runner {
             Log ( "Operation: Revert all migrations" );
 
             foreach ( var connectionString in m_connectionStrings ) {
+                Log ( $"Applied for connection string: {HidePasswordInConnectionString ( connectionString )}" );
+
                 await sqlRunner.BeginTransactionAsync ( connectionString );
 
                 var appliedMigrations = await sqlRunner.GetAppliedMigrations ( connectionString );

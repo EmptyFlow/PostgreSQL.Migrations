@@ -71,7 +71,7 @@ namespace PostgreSQL.Migrations.SqlRunner {
                 await using var cmd = new NpgsqlCommand ( migration.UpScript, connection, transaction );
                 await cmd.ExecuteNonQueryAsync ();
             } catch ( Exception ex ) {
-                throw new Exception ( $"Error while run UP migration with number {migration}!", ex );
+                throw new Exception ( $"Error while run UP migration with number {migration.MigrationNumber}!", ex );
             }
 
             await CreateMigrationRecord ( migration.MigrationNumber, migration.Description, migration.Issue, connection, transaction );
@@ -87,7 +87,7 @@ namespace PostgreSQL.Migrations.SqlRunner {
                 await using var cmd = new NpgsqlCommand ( migration.DownScript, connection, transaction );
                 await cmd.ExecuteNonQueryAsync ();
             } catch ( Exception ex ) {
-                throw new Exception ( $"Error while run DOWN migration with number {migration}!", ex );
+                throw new Exception ( $"Error while run DOWN migration with number {migration.MigrationNumber}!", ex );
             }
 
             await DeleteMigrationRecord ( migration.MigrationNumber, connection, transaction );

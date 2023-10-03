@@ -14,7 +14,7 @@ namespace PostgreSQL.Migrations.Console {
 
             await runner.LoadMigrationsAsync ( migrationResolvers );
 
-            SystemConsole.WriteLine ( $"Migrations loaded. Founded {runner.CountMigrations()} migrations." );
+            SystemConsole.WriteLine ( $"Migrations loaded. Founded {runner.CountMigrations ()} migrations." );
 
             runner.ConnectionString ( connectionStrings );
             return runner;
@@ -52,6 +52,43 @@ namespace PostgreSQL.Migrations.Console {
             SystemConsole.WriteLine ( $"Operation Force Revert is completed!" );
 
             return 0;
+        }
+
+        public static async Task<int> ApplyMigrationProfileToDatabase ( ApplyProfileOptions options ) {
+            var model = await ReadModel<ApplyOptions> ( options.Profile );
+
+            return await ApplyMigrationsToDatabase ( model );
+        }
+
+        public static async Task<int> RevertMigrationProfileToDatabase ( RevertProfileOptions options ) {
+            var model = await ReadModel<RevertOptions> ( options.Profile );
+
+            model.Migration = options.Migration;
+
+            return await RevertMigrationsToDatabase ( model );
+        }
+
+        public static async Task<int> ForceRevertMigrationProfileToDatabase ( ForceRevertProfileOptions options ) {
+            var model = await ReadModel<ForceRevertOptions> ( options.Profile );
+
+            model.Migration = options.Migration;
+
+            return await ForceRevertMigrationInDatabase ( model );
+        }
+
+        private static async Task<T> ReadModel<T> ( string profile ) where T : DatabaseAdjustments, new() {
+            var profileName = string.IsNullOrEmpty ( profile ) ? "migrationprofile" : profile;
+
+            if ( !File.Exists ( profileName ) ) {
+                SystemConsole.WriteLine ( $"Profile `{profileName}` is not found!" );
+                throw new Exception ( "" );
+            }
+
+            var model = ProfileReader.Read<T> ( await File.ReadAllTextAsync ( profileName ) );
+
+            if ( string.IsNullOrEmpty ( model.Strategy ) ) model.Strategy = "MigrationResolverAttribute";
+
+            return model;
         }
 
     }
