@@ -14,7 +14,7 @@ namespace PostgreSQL.Migrations.Console.Strategies {
                 assemblies.Add ( loadedAssembly );
             }
 
-            var resolver = new MigrationResolverAttribute ();
+            var resolver = new MigrationNumberAttributeResolver ();
             resolver.AddAssemblies ( assemblies );
             resolver.SetGroup ( group );
 

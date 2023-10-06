@@ -7,9 +7,11 @@ namespace PostgreSQL.Migrations.SqlRunner {
 
         private readonly Dictionary<string, (NpgsqlConnection, NpgsqlTransaction)> m_connections = new ();
 
-        private const string MigrationTable = "postgresmigrations";
+        private readonly string MigrationTable;
 
-        private static async Task CreateMigrationTableIfRequired ( NpgsqlConnection connection, NpgsqlTransaction transaction ) {
+        public PostgresSqlRunner ( string migrationTableName = "" ) => MigrationTable = string.IsNullOrEmpty ( migrationTableName ) ? "postgresmigrations" : migrationTableName;
+
+        private async Task CreateMigrationTableIfRequired ( NpgsqlConnection connection, NpgsqlTransaction transaction ) {
             await using var cmd = new NpgsqlCommand (
                 $"CREATE TABLE IF NOT EXISTS {MigrationTable}(timestamp integer NOT NULL PRIMARY KEY, description text, issue text, created timestamp NOT NULL DEFAULT now())",
                 connection,
@@ -43,7 +45,7 @@ namespace PostgreSQL.Migrations.SqlRunner {
             m_connections.Remove ( connectionString );
         }
 
-        private static async Task CreateMigrationRecord ( int migrationId, string description, string issue, NpgsqlConnection connection, NpgsqlTransaction transaction ) {
+        private async Task CreateMigrationRecord ( int migrationId, string description, string issue, NpgsqlConnection connection, NpgsqlTransaction transaction ) {
             await using var cmd = new NpgsqlCommand ( $"INSERT INTO {MigrationTable} (timestamp, description, issue) VALUES (@_param1, @_param2, @_param3)", connection, transaction );
 
             cmd.Parameters.AddWithValue ( "@_param1", migrationId );
@@ -53,7 +55,7 @@ namespace PostgreSQL.Migrations.SqlRunner {
             await cmd.ExecuteNonQueryAsync ();
         }
 
-        private static async Task DeleteMigrationRecord ( int migrationId, NpgsqlConnection connection, NpgsqlTransaction transaction ) {
+        private async Task DeleteMigrationRecord ( int migrationId, NpgsqlConnection connection, NpgsqlTransaction transaction ) {
             await using var cmd = new NpgsqlCommand ( $"DELETE FROM {MigrationTable} WHERE timestamp = @_param1", connection, transaction );
 
             cmd.Parameters.AddWithValue ( "@_param1", migrationId );

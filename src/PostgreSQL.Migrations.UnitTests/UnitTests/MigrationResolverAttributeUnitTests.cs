@@ -27,7 +27,7 @@ namespace PostgreSQL.Migrations.UnitTests.UnitTests {
         [Fact, Trait ( "Category", "Unit" )]
         public async Task GetMigrations_Completed () {
             //arrange
-            var service = new MigrationResolverAttribute ();
+            var service = new MigrationNumberAttributeResolver ();
 
             service.AddAssemblies ( new List<Assembly> { typeof ( MigrationResolverAttributeUnitTests ).Assembly } );
 
@@ -53,7 +53,7 @@ namespace PostgreSQL.Migrations.UnitTests.UnitTests {
         [Fact, Trait ( "Category", "Unit" )]
         public async Task GetMigrations_GroupFilter_SingleGroup_Completed () {
             //arrange
-            var service = new MigrationResolverAttribute ();
+            var service = new MigrationNumberAttributeResolver ();
 
             service.AddAssemblies ( new List<Assembly> { typeof ( MigrationResolverAttributeUnitTests ).Assembly } );
             service.SetGroup ( "lASTgrouP" );
@@ -71,7 +71,7 @@ namespace PostgreSQL.Migrations.UnitTests.UnitTests {
         [Fact, Trait ( "Category", "Unit" )]
         public async Task GetMigrations_GroupFilter_MultipleGroups_Completed () {
             //arrange
-            var service = new MigrationResolverAttribute ();
+            var service = new MigrationNumberAttributeResolver ();
 
             service.AddAssemblies ( new List<Assembly> { typeof ( MigrationResolverAttributeUnitTests ).Assembly } );
             service.SetGroup ( "lAsTgrouP, Firstgroup" );
@@ -91,7 +91,7 @@ namespace PostgreSQL.Migrations.UnitTests.UnitTests {
         [Fact, Trait ( "Category", "Unit" )]
         public async Task GetMigrations_GroupFilter_MultipleGroups_SecondGroupInAttribute_Completed () {
             //arrange
-            var service = new MigrationResolverAttribute ();
+            var service = new MigrationNumberAttributeResolver ();
 
             service.AddAssemblies ( new List<Assembly> { typeof ( MigrationResolverAttributeUnitTests ).Assembly } );
             service.SetGroup ( "lalala, Firstgroup" );

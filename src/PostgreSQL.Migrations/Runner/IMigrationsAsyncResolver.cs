@@ -11,6 +11,12 @@
         /// </summary>
         Task<IEnumerable<AvailableMigration>> GetMigrationsAsync ();
 
+        /// <summary>
+        /// Generate new migration.
+        /// </summary>
+        /// <param name="parameters">Parameters required for generation new migration.</param>
+        Task<string> GenerateNewMigrationAsync ( List<string> parameters );
+
     }
 
 }

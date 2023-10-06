@@ -7,7 +7,7 @@ namespace PostgreSQL.Migrations.Client {
     /// <summary>
     /// Migration resolve based on decorating classes with <see cref="MigrationNumberAttribute"/> attribute and <see cref="DescriptionAttribute"/> for specify field issue.
     /// </summary>
-    public class MigrationResolverAttribute : IMigrationsAsyncResolver {
+    public class MigrationNumberAttributeResolver : IMigrationsAsyncResolver {
 
         private const string AttributeName = "MigrationNumberAttribute";
 
@@ -17,7 +17,7 @@ namespace PostgreSQL.Migrations.Client {
 
         private Type? m_attributeType;
 
-        private const string m_failedMessage = nameof ( MigrationResolverAttribute ) + ": Failed get migrations";
+        private const string m_failedMessage = nameof ( MigrationNumberAttributeResolver ) + ": Failed get migrations";
 
         public void AddAssemblies ( IEnumerable<Assembly> assemblies ) => m_assemblies.AddRange ( assemblies );
 
@@ -113,6 +113,10 @@ namespace PostgreSQL.Migrations.Client {
             var groups = group.Split ( "," ).Select ( a => a.Trim ().ToLowerInvariant () );
             var searchGroups = m_group.Split ( "," ).Select ( a => a.Trim ().ToLowerInvariant () );
             return groups.Intersect ( searchGroups ).Any ();
+        }
+
+        public Task<string> GenerateNewMigrationAsync ( List<string> parameters ) {
+            throw new NotImplementedException ();
         }
 
     }
