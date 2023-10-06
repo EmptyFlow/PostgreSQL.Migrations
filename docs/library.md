@@ -42,7 +42,7 @@ It have two methods `GetMigrationsAsync` and `GenerateNewMigrationAsync`.
 #### GetMigrationsAsync
 Result of performing this method must be list of all available migrations in project.
 
-#### `GenerateNewMigrationAsync(parameters)`.
+#### GenerateNewMigrationAsync
 The result of this method will be to create migrations in the source code. This could be a file or files or another form.
 `parameters` depend on the specific migration resolver and can be in any form, please see the documentation for the required MigrationResolver for more information.
 
