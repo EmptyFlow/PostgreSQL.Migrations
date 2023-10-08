@@ -20,13 +20,20 @@ namespace PostgreSQL.Migrations.Console {
             return runner;
         }
 
+        public static ISqlRunner GetSqlRunner ( DatabaseAdjustments options ) {
+            var sqlRunner = Dependencies.GetService<ISqlRunner> ();
+            if ( !string.IsNullOrEmpty ( options.MigrationTable ) ) sqlRunner.SetTableName ( options.MigrationTable );
+
+            return sqlRunner;
+        }
+
         public static async Task<int> ApplyMigrationsToDatabase ( ApplyOptions options ) {
             var migrationResolvers = await MigrationResolver.GetResolvers ( options.Files, options.Group, options.Strategy );
 
             var runner = await GetRunner ( options.ConnectionStrings, migrationResolvers );
 
             SystemConsole.WriteLine ( $"Starting operation Apply..." );
-            await runner.ApplyMigrationsAsync ( Dependencies.GetService<ISqlRunner> () );
+            await runner.ApplyMigrationsAsync ( GetSqlRunner ( options ) );
             SystemConsole.WriteLine ( $"Operation Apply is completed!" );
 
             return 0;
@@ -37,7 +44,7 @@ namespace PostgreSQL.Migrations.Console {
             var runner = await GetRunner ( options.ConnectionStrings, migrationResolvers );
 
             SystemConsole.WriteLine ( $"Starting operation Revert..." );
-            await runner.RevertMigrationAsync ( Dependencies.GetService<ISqlRunner> (), options.Migration );
+            await runner.RevertMigrationAsync ( GetSqlRunner ( options ), options.Migration );
             SystemConsole.WriteLine ( $"Operation Revert is completed!" );
 
             return 0;
@@ -48,7 +55,7 @@ namespace PostgreSQL.Migrations.Console {
             var runner = await GetRunner ( options.ConnectionStrings, migrationResolvers );
 
             SystemConsole.WriteLine ( $"Starting operation Force Revert..." );
-            await runner.ForceMigrationAsync ( Dependencies.GetService<ISqlRunner> (), options.Migration );
+            await runner.ForceMigrationAsync ( GetSqlRunner ( options ), options.Migration );
             SystemConsole.WriteLine ( $"Operation Force Revert is completed!" );
 
             return 0;

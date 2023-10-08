@@ -7,13 +7,17 @@ namespace PostgreSQL.Migrations.SqlRunner {
 
         private readonly Dictionary<string, (NpgsqlConnection, NpgsqlTransaction)> m_connections = new ();
 
-        private readonly string MigrationTable;
+        private string m_migrationTable = "postgresmigrations";
 
-        public PostgresSqlRunner ( string migrationTableName = "" ) => MigrationTable = string.IsNullOrEmpty ( migrationTableName ) ? "postgresmigrations" : migrationTableName;
+        public PostgresSqlRunner ( string migrationTableName = "" ) {
+            if ( !string.IsNullOrEmpty ( migrationTableName ) ) m_migrationTable = migrationTableName;
+        }
+
+        public void SetTableName ( string tableName ) => m_migrationTable = tableName;
 
         private async Task CreateMigrationTableIfRequired ( NpgsqlConnection connection, NpgsqlTransaction transaction ) {
             await using var cmd = new NpgsqlCommand (
-                $"CREATE TABLE IF NOT EXISTS {MigrationTable}(timestamp integer NOT NULL PRIMARY KEY, description text, issue text, created timestamp NOT NULL DEFAULT now())",
+                $"CREATE TABLE IF NOT EXISTS {m_migrationTable}(timestamp integer NOT NULL PRIMARY KEY, description text, issue text, created timestamp NOT NULL DEFAULT now())",
                 connection,
                 transaction
             );
@@ -46,7 +50,7 @@ namespace PostgreSQL.Migrations.SqlRunner {
         }
 
         private async Task CreateMigrationRecord ( int migrationId, string description, string issue, NpgsqlConnection connection, NpgsqlTransaction transaction ) {
-            await using var cmd = new NpgsqlCommand ( $"INSERT INTO {MigrationTable} (timestamp, description, issue) VALUES (@_param1, @_param2, @_param3)", connection, transaction );
+            await using var cmd = new NpgsqlCommand ( $"INSERT INTO {m_migrationTable} (timestamp, description, issue) VALUES (@_param1, @_param2, @_param3)", connection, transaction );
 
             cmd.Parameters.AddWithValue ( "@_param1", migrationId );
             cmd.Parameters.AddWithValue ( "@_param2", description );
@@ -56,7 +60,7 @@ namespace PostgreSQL.Migrations.SqlRunner {
         }
 
         private async Task DeleteMigrationRecord ( int migrationId, NpgsqlConnection connection, NpgsqlTransaction transaction ) {
-            await using var cmd = new NpgsqlCommand ( $"DELETE FROM {MigrationTable} WHERE timestamp = @_param1", connection, transaction );
+            await using var cmd = new NpgsqlCommand ( $"DELETE FROM {m_migrationTable} WHERE timestamp = @_param1", connection, transaction );
 
             cmd.Parameters.AddWithValue ( "@_param1", migrationId );
 
@@ -100,7 +104,7 @@ namespace PostgreSQL.Migrations.SqlRunner {
 
             var (connection, transaction) = m_connections[connectionString];
 
-            await using var cmd = new NpgsqlCommand ( $"SELECT timestamp FROM {MigrationTable} ORDER BY timestamp", connection, transaction );
+            await using var cmd = new NpgsqlCommand ( $"SELECT timestamp FROM {m_migrationTable} ORDER BY timestamp", connection, transaction );
 
             using var reader = await cmd.ExecuteReaderAsync ();
             var result = new List<int> ();
@@ -112,4 +116,5 @@ namespace PostgreSQL.Migrations.SqlRunner {
         }
 
     }
+
 }

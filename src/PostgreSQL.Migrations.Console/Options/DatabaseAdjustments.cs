@@ -19,6 +19,9 @@ namespace PostgreSQL.Migrations.Console.Options {
         [Option ( 'g', "group", HelpText = "If you specify some group or groups (separated by commas), migrations will be filtered by these groups." )]
         public string Group { get; set; } = "";
 
+        [Option ( 't', "tablename", HelpText = "You can change the name of the table in which the migrations will be stored." )]
+        public string MigrationTable { get; set; } = "";
+
     }
 
 }

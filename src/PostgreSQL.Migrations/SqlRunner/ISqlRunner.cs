@@ -8,6 +8,12 @@ namespace PostgreSQL.Migrations.SqlRunner {
     public interface ISqlRunner {
 
         /// <summary>
+        /// Set table name.
+        /// </summary>
+        /// <param name="tableName">Table name.</param>
+        void SetTableName ( string tableName );
+
+        /// <summary>
         /// Begin database transaction.
         /// </summary>
         /// <returns></returns>
