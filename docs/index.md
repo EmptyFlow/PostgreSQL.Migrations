@@ -5,7 +5,7 @@ To check the sources, visit the [github repository](https://github.com/EmptyFlow
 ## Goal of project
 
 The goal of the project is to simplify the creation and management of database migrations.
-Make it possible to easily integrate migrations into any project or process, be it target audience, tests, application, installer, etc.
+Make it possible to easily integrate migrations into any project/process, be it tests, application, installer, etc.
 Flexible extension of any part of the migration process.
 ORM tooling independence makes it easy to change ORMs or use multiple ORMs at the same time in one project.
 
