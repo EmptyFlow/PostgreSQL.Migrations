@@ -14,9 +14,14 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>migrations;postgressql</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>0.0.6</Version>
+    <Version>0.0.7</Version>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Client\Templates\WithNamespaceTemplate.template" />
+    <EmbeddedResource Include="Client\Templates\WithoutNamespaceTemplate.template" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\..\LICENSE">

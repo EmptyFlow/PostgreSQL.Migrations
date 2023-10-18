@@ -4,7 +4,10 @@ using PostgreSQL.Migrations.Console.Options;
 
 Dependencies.RegisterMigrations ();
 
-var parser = Parser.Default.ParseArguments<ApplyOptions, RevertOptions, ForceRevertOptions, ApplyProfileOptions, RevertProfileOptions, ForceRevertProfileOptions> ( args );
+var parser = Parser.Default.ParseArguments<
+    ApplyOptions, RevertOptions, ForceRevertOptions,
+    ApplyProfileOptions, RevertProfileOptions, ForceRevertProfileOptions,
+    AddMigrationOptions> ( args );
 
 await parser.WithParsedAsync<ApplyOptions> ( DatabaseOperations.ApplyMigrationsToDatabase );
 await parser.WithParsedAsync<RevertOptions> ( DatabaseOperations.RevertMigrationsToDatabase );
@@ -12,6 +15,7 @@ await parser.WithParsedAsync<ForceRevertOptions> ( DatabaseOperations.ForceRever
 await parser.WithParsedAsync<ApplyProfileOptions> ( DatabaseOperations.ApplyMigrationProfileToDatabase );
 await parser.WithParsedAsync<RevertProfileOptions> ( DatabaseOperations.RevertMigrationProfileToDatabase );
 await parser.WithParsedAsync<ForceRevertProfileOptions> ( DatabaseOperations.ForceRevertMigrationProfileToDatabase );
+await parser.WithParsedAsync<AddMigrationOptions> ( AddMigrationOperations.AddMigration );
 await parser.WithNotParsedAsync ( HandleParseError );
 
 static Task<int> HandleParseError ( IEnumerable<Error> errors ) {

@@ -15,7 +15,8 @@
         /// Generate new migration.
         /// </summary>
         /// <param name="parameters">Parameters required for generation new migration.</param>
-        Task<string> GenerateNewMigrationAsync ( List<string> parameters );
+        /// <param name="migrationNumber">Migration number.</param>
+        Task GenerateNewMigrationAsync ( List<string> parameters, int migrationNumber );
 
     }
 

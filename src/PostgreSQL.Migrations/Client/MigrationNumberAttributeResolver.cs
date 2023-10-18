@@ -115,8 +115,55 @@ namespace PostgreSQL.Migrations.Client {
             return groups.Intersect ( searchGroups ).Any ();
         }
 
-        public Task<string> GenerateNewMigrationAsync ( List<string> parameters ) {
-            throw new NotImplementedException ();
+        private static string? GetStringValueFromParameters ( string name, List<string> parameters, bool isRequired, string valueDescription = "" ) {
+            var value = parameters.FirstOrDefault ( a => a.StartsWith ( $"{name}=" ) );
+            if ( value == null && isRequired ) throw new Exception ( $"Parameter {name} is required! You need specify it as `{name}=<{valueDescription}>`" );
+
+            return value?.Replace ( $"{name}=", "" ) ?? "";
+        }
+
+        public async Task GenerateNewMigrationAsync ( List<string> parameters, int migrationNumber ) {
+            var folder = GetStringValueFromParameters ( "folder", parameters, true, "path to folder where migrations will be generated" );
+            var fileNamespace = GetStringValueFromParameters ( "namespace", parameters, false );
+            var customClassName = GetStringValueFromParameters ( "classname", parameters, false );
+            var issue = GetStringValueFromParameters ( "issue", parameters, false );
+            var groups = GetStringValueFromParameters ( "groups", parameters, false );
+
+            if ( !Directory.Exists ( folder ) ) throw new Exception ( $"Folder {folder} don't exists!" );
+
+            var assembly = GetType ().Assembly;
+
+            Stream? templateStream;
+
+            if ( string.IsNullOrEmpty ( fileNamespace ) ) {
+                templateStream = assembly.GetManifestResourceStream ( "PostgreSQL.Migrations.Client.Templates.WithoutNamespaceTemplate.template" );
+            } else {
+                templateStream = assembly.GetManifestResourceStream ( "PostgreSQL.Migrations.Client.Templates.WithNamespaceTemplate.template" );
+            }
+            if ( templateStream == null ) return;
+
+            using var streamReader = new StreamReader ( templateStream );
+            var template = await streamReader.ReadToEndAsync ();
+
+            var migrationsClassName = customClassName?.Replace ( "{MigrationNumber}", migrationNumber.ToString () ) ?? $"Migration{migrationNumber}";
+
+            template = template
+                .Replace ( "{ClassName}", migrationsClassName )
+                .Replace ( "{Namespace}", fileNamespace )
+                .Replace ( "{MigrationNumber}", migrationNumber.ToString () );
+            template = ReplaceOptionalAttribute ( "{Issue}", template, issue );
+            template = ReplaceOptionalAttribute ( "{Group}", template, groups );
+
+            var filePath = Path.Combine ( folder, migrationsClassName );
+            await File.WriteAllTextAsync ( filePath, template );
+
+            Console.WriteLine ( $"Migration file {filePath} created." );
+        }
+
+        private static string ReplaceOptionalAttribute ( string pattern, string template, string? value ) {
+            if ( !string.IsNullOrEmpty ( value ) ) return template.Replace ( pattern, $",\"{value}\"" );
+
+            return template.Replace ( pattern, "" );
         }
 
     }
