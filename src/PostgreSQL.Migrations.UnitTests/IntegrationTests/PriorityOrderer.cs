@@ -29,7 +29,9 @@ namespace PostgreSQL.Migrations.UnitTests.IntegrationTests {
         static TValue GetOrCreate<TKey, TValue> ( IDictionary<TKey, TValue> dictionary, TKey key ) where TValue : new() {
             TValue result;
 
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             if ( dictionary.TryGetValue ( key, out result ) ) return result;
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
             result = new TValue ();
             dictionary[key] = result;

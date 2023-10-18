@@ -82,6 +82,7 @@ namespace PostgreSQL.Migrations.UnitTests.UnitTests {
             //assert
             Assert.True ( migrations.Count () == 2 );
             var firstMigration = migrations.FirstOrDefault ( a => a.MigrationNumber == 1 );
+            Assert.NotNull ( firstMigration );
             Assert.Equal ( 1, firstMigration.MigrationNumber );
             var secondMigration = migrations.FirstOrDefault ( a => a.MigrationNumber == 2 );
             Assert.NotNull ( secondMigration );
@@ -102,6 +103,7 @@ namespace PostgreSQL.Migrations.UnitTests.UnitTests {
             //assert
             Assert.True ( migrations.Count () == 2 );
             var firstMigration = migrations.FirstOrDefault ( a => a.MigrationNumber == 1 );
+            Assert.NotNull ( firstMigration );
             Assert.Equal ( 1, firstMigration.MigrationNumber );
             var secondMigration = migrations.FirstOrDefault ( a => a.MigrationNumber == 2 );
             Assert.NotNull ( secondMigration );
