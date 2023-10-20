@@ -7,7 +7,8 @@ Dependencies.RegisterDependencies ();
 var parser = Parser.Default.ParseArguments<
 	ApplyOptions, RevertOptions, ForceRevertOptions,
 	ApplyProfileOptions, RevertProfileOptions, ForceRevertProfileOptions,
-	AddMigrationOptions, AddMigrationProfileOptions> ( args );
+	AddMigrationOptions, AddMigrationProfileOptions,
+	RevertAllOptions, RevertAllProfileOptions> ( args );
 
 await parser.WithParsedAsync<ApplyOptions> ( DatabaseOperations.ApplyMigrationsToDatabase );
 await parser.WithParsedAsync<RevertOptions> ( DatabaseOperations.RevertMigrationsToDatabase );
@@ -17,6 +18,8 @@ await parser.WithParsedAsync<RevertProfileOptions> ( DatabaseOperations.RevertMi
 await parser.WithParsedAsync<ForceRevertProfileOptions> ( DatabaseOperations.ForceRevertMigrationProfileToDatabase );
 await parser.WithParsedAsync<AddMigrationOptions> ( AddMigrationOperations.AddMigration );
 await parser.WithParsedAsync<AddMigrationProfileOptions> ( AddMigrationOperations.AddMigrationProfile );
+await parser.WithParsedAsync<RevertAllOptions> ( DatabaseOperations.RevertAllMigrations );
+await parser.WithParsedAsync<RevertAllProfileOptions> ( DatabaseOperations.RevertAllMigrationsProfile );
 await parser.WithNotParsedAsync ( HandleParseError );
 
 static Task<int> HandleParseError ( IEnumerable<Error> errors ) {

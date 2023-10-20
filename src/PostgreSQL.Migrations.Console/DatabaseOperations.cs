@@ -98,6 +98,23 @@ namespace PostgreSQL.Migrations.Console {
 			return model;
 		}
 
+		public static async Task<int> RevertAllMigrations ( RevertAllOptions options ) {
+			var migrationResolvers = await MigrationResolver.GetResolvers ( options.Files, options.Group, options.Strategy );
+			var runner = await GetRunner ( options.ConnectionStrings, migrationResolvers );
+
+			SystemConsole.WriteLine ( $"Starting operation Revert All..." );
+			await runner.RevertAllMigrationsAsync ( GetSqlRunner ( options ) );
+			SystemConsole.WriteLine ( $"Operation Revert is completed!" );
+
+			return 0;
+		}
+
+		public static async Task<int> RevertAllMigrationsProfile ( RevertAllProfileOptions options ) {
+			var model = await ReadModel<RevertAllOptions> ( options.Profile );
+
+			return await RevertAllMigrations ( model );
+		}
+
 	}
 
 }
