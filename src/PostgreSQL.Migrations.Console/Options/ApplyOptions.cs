@@ -1,11 +1,9 @@
 ﻿using CommandLine;
 
-namespace PostgreSQL.Migrations.Console.Options
-{
+namespace PostgreSQL.Migrations.Console.Options {
 
-    [Verb("apply", HelpText = "Apply all new migrations to database(s).")]
-    public class ApplyOptions : DatabaseAdjustments
-    {
-    }
+	[Verb ( "apply", HelpText = "Apply all new migrations to database(s)." )]
+	public class ApplyOptions : DatabaseAdjustments {
+	}
 
 }

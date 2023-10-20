@@ -7,13 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostgreSQL.Migrations", "Po
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostgreSQL.Migrations.Tests", "..\PostgreSQL.Migrations.UnitTests\PostgreSQL.Migrations.Tests.csproj", "{8F97FB7B-1DA9-4318-8150-73D91CD7C9A7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostgreSQL.Migrations.Console", "..\PostgreSQL.Migrations.Console\PostgreSQL.Migrations.Console.csproj", "{AAF067AD-E33C-466D-BD8C-087F42226339}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Migrations.Console", "..\PostgreSQL.Migrations.Console\Migrations.Console.csproj", "{AAF067AD-E33C-466D-BD8C-087F42226339}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostgreSQL.Migrations.Console.Tests", "..\PostgreSQL.Migrations.Console.Tests\PostgreSQL.Migrations.Console.Tests.csproj", "{25034F45-5A2F-460E-A523-35747FA1CB34}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E5194E7A-DA57-459F-BB5A-423871301697}"
 	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
+		..\.editorconfig = ..\.editorconfig
 	EndProjectSection
 EndProject
 Global

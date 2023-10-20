@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PostgreSQL.Migrations.Console\PostgreSQL.Migrations.Console.csproj" />
+    <ProjectReference Include="..\PostgreSQL.Migrations.Console\Migrations.Console.csproj" />
   </ItemGroup>
 
 </Project>
