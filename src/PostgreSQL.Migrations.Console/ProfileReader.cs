@@ -16,6 +16,8 @@ namespace PostgreSQL.Migrations.Console {
 		private const string GroupField = "group ";
 
 		private const string GenerationParameterField = "genparameter ";
+		
+		private const string MigrationTableField = "migrationtable ";
 
 		public const string DefaultProfileName = "migrationprofile";
 
@@ -33,6 +35,7 @@ namespace PostgreSQL.Migrations.Console {
 				if ( item.StartsWith ( FilesField ) ) files.Add ( item.Replace ( FilesField, "" ) );
 				if ( item.StartsWith ( StrategiesField ) ) adjustmentsModel.Strategy = item.Replace ( StrategiesField, "" );
 				if ( item.StartsWith ( GroupField ) ) adjustmentsModel.Group = item.Replace ( GroupField, "" );
+				if ( item.StartsWith ( MigrationTableField ) ) adjustmentsModel.MigrationTable = item.Replace ( MigrationTableField, "" );
 			}
 
 			adjustmentsModel.ConnectionStrings = connectionStrings;
