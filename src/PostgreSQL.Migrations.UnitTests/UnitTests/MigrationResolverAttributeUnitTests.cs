@@ -1,4 +1,5 @@
-﻿using PostgreSQL.Migrations.Client;
+﻿using Database.Migrations;
+using PostgreSQL.Migrations.Client;
 using System.Reflection;
 using Xunit;
 

@@ -1,6 +1,5 @@
 ﻿using PostgreSQL.Migrations.Console.Options;
-using PostgreSQL.Migrations.Runner;
-using PostgreSQL.Migrations.SqlRunner;
+using Database.Migrations;
 using SystemConsole = System.Console;
 
 namespace PostgreSQL.Migrations.Console {

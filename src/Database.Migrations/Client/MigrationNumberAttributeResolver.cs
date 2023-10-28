@@ -1,8 +1,7 @@
-﻿using PostgreSQL.Migrations.Runner;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Reflection;
 
-namespace PostgreSQL.Migrations.Client {
+namespace Database.Migrations {
 
 	/// <summary>
 	/// Migration resolve based on decorating classes with <see cref="MigrationNumberAttribute"/> attribute and <see cref="DescriptionAttribute"/> for specify field issue.
@@ -136,9 +135,9 @@ namespace PostgreSQL.Migrations.Client {
 			Stream? templateStream;
 
 			if ( string.IsNullOrEmpty ( fileNamespace ) ) {
-				templateStream = assembly.GetManifestResourceStream ( "PostgreSQL.Migrations.Client.Templates.WithoutNamespaceTemplate.template" );
+				templateStream = assembly.GetManifestResourceStream ( "Database.Migrations.Client.Templates.WithoutNamespaceTemplate.template" );
 			} else {
-				templateStream = assembly.GetManifestResourceStream ( "PostgreSQL.Migrations.Client.Templates.WithNamespaceTemplate.template" );
+				templateStream = assembly.GetManifestResourceStream ( "Database.Migrations.Client.Templates.WithNamespaceTemplate.template" );
 			}
 			if ( templateStream == null ) return;
 

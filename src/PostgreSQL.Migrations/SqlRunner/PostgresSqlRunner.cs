@@ -1,5 +1,5 @@
-﻿using Npgsql;
-using PostgreSQL.Migrations.Runner;
+﻿using Database.Migrations;
+using Npgsql;
 
 namespace PostgreSQL.Migrations.SqlRunner {
 

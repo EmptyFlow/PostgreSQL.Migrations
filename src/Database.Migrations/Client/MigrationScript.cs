@@ -1,4 +1,4 @@
-﻿namespace PostgreSQL.Migrations.Client {
+﻿namespace Database.Migrations {
 
     /// <summary>
     /// Base class for classes containing Up and Down SQL scripts.

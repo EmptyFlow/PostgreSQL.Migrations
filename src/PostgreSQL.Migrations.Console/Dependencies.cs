@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Database.Migrations;
+using Microsoft.Extensions.DependencyInjection;
 using PostgreSQL.Migrations.SqlRunner;
 
 namespace PostgreSQL.Migrations.Console {

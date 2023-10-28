@@ -1,4 +1,4 @@
-﻿namespace PostgreSQL.Migrations.Runner {
+﻿namespace Database.Migrations {
 
     /// <summary>
     /// An interface to implement a asynchronize method for getting available migrations.

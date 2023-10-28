@@ -1,8 +1,6 @@
-﻿using Npgsql;
-using PostgreSQL.Migrations.SqlRunner;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
-namespace PostgreSQL.Migrations.Runner {
+namespace Database.Migrations {
 
 
     public sealed class MigrationRunner {
@@ -53,19 +51,9 @@ namespace PostgreSQL.Migrations.Runner {
             m_connectionStrings.Add ( connectionString );
         }
 
-        public void ConnectionString ( NpgsqlConnectionStringBuilder builder ) {
-            m_connectionStrings.Clear ();
-            m_connectionStrings.Add ( builder.ToString () );
-        }
-
         public void ConnectionString ( IEnumerable<string> connectionStrings ) {
             m_connectionStrings.Clear ();
             m_connectionStrings.AddRange ( connectionStrings );
-        }
-
-        public void ConnectionString ( IEnumerable<NpgsqlConnectionStringBuilder> builders ) {
-            m_connectionStrings.Clear ();
-            m_connectionStrings.AddRange ( builders.Select ( a => a.ToString () ) );
         }
 
         public async Task ApplyMigrationsAsync ( ISqlRunner sqlRunner ) {

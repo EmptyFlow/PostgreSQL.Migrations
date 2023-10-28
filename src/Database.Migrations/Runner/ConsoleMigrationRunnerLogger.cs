@@ -1,4 +1,4 @@
-﻿namespace PostgreSQL.Migrations.Runner {
+﻿namespace Database.Migrations {
 
     /// <summary>
     /// A logger implementation that writes log messages to the console.

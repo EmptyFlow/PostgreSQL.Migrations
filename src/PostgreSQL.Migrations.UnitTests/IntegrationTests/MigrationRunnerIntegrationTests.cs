@@ -1,6 +1,6 @@
 ﻿using FakeItEasy;
 using Npgsql;
-using PostgreSQL.Migrations.Runner;
+using Database.Migrations;
 using PostgreSQL.Migrations.SqlRunner;
 using Xunit;
 

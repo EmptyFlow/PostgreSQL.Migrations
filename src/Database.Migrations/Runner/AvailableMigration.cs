@@ -1,4 +1,4 @@
-﻿namespace PostgreSQL.Migrations.Runner {
+﻿namespace Database.Migrations {
 
     /// <summary>
     /// Available migration.

@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\.editorconfig = ..\.editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database.Migrations", "..\Database.Migrations\Database.Migrations.csproj", "{128F7A54-5F56-4173-9960-A7220359E4C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{25034F45-5A2F-460E-A523-35747FA1CB34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25034F45-5A2F-460E-A523-35747FA1CB34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25034F45-5A2F-460E-A523-35747FA1CB34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{128F7A54-5F56-4173-9960-A7220359E4C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{128F7A54-5F56-4173-9960-A7220359E4C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{128F7A54-5F56-4173-9960-A7220359E4C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{128F7A54-5F56-4173-9960-A7220359E4C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

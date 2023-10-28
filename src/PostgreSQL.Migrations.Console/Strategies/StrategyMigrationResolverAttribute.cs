@@ -1,5 +1,4 @@
-﻿using PostgreSQL.Migrations.Client;
-using PostgreSQL.Migrations.Runner;
+﻿using Database.Migrations;
 using System.Reflection;
 using System.Runtime.Loader;
 

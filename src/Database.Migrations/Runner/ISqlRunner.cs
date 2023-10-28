@@ -1,6 +1,4 @@
-﻿using PostgreSQL.Migrations.Runner;
-
-namespace PostgreSQL.Migrations.SqlRunner {
+﻿namespace Database.Migrations {
 
     /// <summary>
     /// Common interface for interacting with SQL providers.

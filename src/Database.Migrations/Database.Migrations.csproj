@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net7.0;net6.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="Client\Templates\WithNamespaceTemplate.template" />
+		<None Remove="Client\Templates\WithoutNamespaceTemplate.template" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="Client\Templates\WithNamespaceTemplate.template" />
+		<EmbeddedResource Include="Client\Templates\WithoutNamespaceTemplate.template" />
+	</ItemGroup>
+
+</Project>

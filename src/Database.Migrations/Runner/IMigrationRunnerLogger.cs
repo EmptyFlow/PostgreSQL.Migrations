@@ -1,4 +1,4 @@
-﻿namespace PostgreSQL.Migrations.Runner {
+﻿namespace Database.Migrations {
 
     /// <summary>
     /// Interface for logging operations and any other messages during the migration process.
