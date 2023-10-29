@@ -1,6 +1,7 @@
 ﻿using PostgreSQL.Migrations.Console.Strategies;
 using Database.Migrations;
 using SystemConsole = System.Console;
+using Migrations.Console.Strategies;
 
 namespace PostgreSQL.Migrations.Console {
 
@@ -8,11 +9,14 @@ namespace PostgreSQL.Migrations.Console {
 
 		private const string MigrationResolverAttributeStrategy = "MigrationResolverAttribute";
 
+		private const string PlainSqlStrategy = "PlainSql";
+
 		public const string DefaultStrategy = MigrationResolverAttributeStrategy;
 
 		public static IMigrationsAsyncResolver GetResolver ( string strategy ) {
 			return strategy switch {
 				MigrationResolverAttributeStrategy => new MigrationNumberAttributeResolver (),
+				PlainSqlStrategy => new PlainSqlFileResolver (),
 				_ => throw new NotSupportedException ( $"Strategy {strategy} not supported!" )
 			};
 		}
@@ -24,6 +28,9 @@ namespace PostgreSQL.Migrations.Console {
 			switch ( strategy ) {
 				case MigrationResolverAttributeStrategy:
 					migrationResolvers.AddRange ( await StrategyMigrationResolverAttribute.Run ( files, group ) );
+					break;
+				case PlainSqlStrategy:
+					migrationResolvers.AddRange ( await StarategyPlainSqlFileResolver.Run ( files, group ) );
 					break;
 				default:
 					break;

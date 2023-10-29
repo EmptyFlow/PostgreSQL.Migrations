@@ -25,11 +25,11 @@ namespace Database.Migrations {
 
 			foreach ( string configFile in m_fileNames ) {
 				var config = await ReadConfigFile ( configFile );
-				var directories = Directory.EnumerateDirectories ( config.ContainingFolder );
+				var directories = Directory.EnumerateDirectories ( Path.GetFullPath ( config.ContainingFolder ) );
 				foreach ( string directory in directories ) {
 					var metaPath = Path.Combine ( directory, config.MetaFileName );
 					var upFilePath = Path.Combine ( directory, config.UpFileName );
-					var downFilePath = Path.Combine ( directory, config.UpFileName );
+					var downFilePath = Path.Combine ( directory, config.DownFileName );
 					if ( !File.Exists ( metaPath ) ) continue;
 
 					var metadata = await ReadMetadataFile ( metaPath );
@@ -54,7 +54,7 @@ namespace Database.Migrations {
 			return result;
 		}
 
-		private async Task<PlainSqlConfigFile> ReadConfigFile ( string fileName ) {
+		private static async Task<PlainSqlConfigFile> ReadConfigFile ( string fileName ) {
 			var content = await File.ReadAllTextAsync ( fileName );
 
 			return PlainSqlConfigReader.Read ( content );
