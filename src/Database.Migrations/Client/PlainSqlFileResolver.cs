@@ -1,5 +1,6 @@
 ﻿using Database.Migrations.Client;
 using Database.Migrations.Readers;
+using System.Linq;
 
 namespace Database.Migrations {
 
@@ -16,8 +17,43 @@ namespace Database.Migrations {
 
 		public void SetConfigFiles ( IEnumerable<string> fileNames ) => m_fileNames = fileNames;
 
-		public Task GenerateNewMigrationAsync ( List<string> parameters, int migrationNumber ) {
-			throw new NotImplementedException ();
+		private static string? GetStringValueFromParameters ( string name, List<string> parameters, bool isRequired, string valueDescription = "" ) {
+			var value = parameters.FirstOrDefault ( a => a.StartsWith ( $"{name}=" ) );
+			if ( value == null && isRequired ) throw new Exception ( $"Parameter {name} is required! You need specify it as `{name}=<{valueDescription}>`" );
+
+			return value?.Replace ( $"{name}=", "" ) ?? "";
+		}
+
+		public async Task GenerateNewMigrationAsync ( List<string> parameters, int migrationNumber ) {
+			var folder = GetStringValueFromParameters ( "folder", parameters, true, "path to folder where migrations will be generated" );
+			var configFile = GetStringValueFromParameters ( "config", parameters, true, "path to folder where migrations will be generated" );
+			var customFolderName = GetStringValueFromParameters ( "migrationfolder", parameters, true, "name of migration folder" );
+			var issue = GetStringValueFromParameters ( "issue", parameters, false );
+			var groups = GetStringValueFromParameters ( "groups", parameters, false );
+
+			if ( !Directory.Exists ( folder ) ) throw new Exception ( $"Folder {folder} don't exists!" );
+			if ( !File.Exists ( configFile ) ) throw new Exception ( $"Configuration file {configFile} don't exists!" );
+
+			var configuration = await ReadConfigFile ( configFile );
+			var containingFolder = Path.GetFullPath ( configuration.ContainingFolder );
+			if ( !Directory.Exists ( containingFolder ) ) {
+				Console.WriteLine ( $"Containing folder {containingFolder} is not exists." );
+				return;
+			}
+
+			var migrationFolder = Path.Combine ( containingFolder, customFolderName?.Replace ( "{MigrationNumber}", migrationNumber.ToString () ) ?? "" );
+			Directory.CreateDirectory ( migrationFolder );
+			await File.WriteAllTextAsync ( Path.Combine ( migrationFolder, configuration.UpFileName ), "-- up script" );
+			await File.WriteAllTextAsync ( Path.Combine ( migrationFolder, configuration.DownFileName ), "-- down script" );
+			var metafileLines = new List<string> {
+				$"number {migrationNumber}"
+			};
+			if ( !string.IsNullOrEmpty ( issue ) ) metafileLines.Add ( $"issue {issue}" );
+			if ( !string.IsNullOrEmpty ( groups ) ) metafileLines.Add ( $"group {groups}" );
+			metafileLines.Add ( $"description Description for migration" );
+
+			await File.WriteAllTextAsync ( Path.Combine ( migrationFolder, configuration.MetaFileName ), string.Join ( '\n', metafileLines ) );
+			Console.WriteLine ( $"Migration files {configuration.UpFileName}, {configuration.DownFileName}, {configuration.MetaFileName} in folder {migrationFolder} created." );
 		}
 
 		public async Task<IEnumerable<AvailableMigration>> GetMigrationsAsync () {
