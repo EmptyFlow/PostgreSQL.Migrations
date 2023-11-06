@@ -21,7 +21,7 @@ For check available options use command `apply --help`.
 
 * `-f [file] [file] or --files [file] [file]` - [required] List of files containing migrations.
 * `-c [string] [string] or --connectionStrings [string] [string]` - [required] List of connection strings to which migrations will be applied.
-* `-s [string] or --strategy [string]` - [default = MigrationResolverAttribute] Select strategy for read migrations.
+* `-s [string] or --strategy [string]` - [default = CSharpClasses] Select strategy for read migrations.
 * `-g  [string] or --group [string]` - If you specify some group or groups (separated by commas), migrations will be filtered by these groups
 * `-t [string] or --tablename [string]` - You can change the name of the table in which the migrations will be stored.
 
@@ -31,7 +31,7 @@ For check available options use command `revert --help`.
 * `-m [number] or --migration [number]` - [required] The parameter specifies the number of the migration to which you want to roll back the changes
 * `-f [file] [file] or --files [file] [file]` - [required] List of files containing migrations.
 * `-c [string] [string] or --connectionStrings [string] [string]` - [required] List of connection strings to which migrations will be applied
-* `-s [string] or --strategy [string]` - [default = MigrationResolverAttribute] Select strategy for read migrations.
+* `-s [string] or --strategy [string]` - [default = CSharpClasses] Select strategy for read migrations.
 * `-g  [string] or --group [string]` - If you specify some group or groups (separated by commas), migrations will be filtered by these groups
 * `-t [string] or --tablename [string]` - You can change the name of the table in which the migrations will be stored.
 
@@ -41,7 +41,7 @@ For check available options use command `force-revert --help`.
 * `-m [number] or --migration [number]` - [required] The parameter specifies the number of the migration which will be reverted (if it was applied before) and after it applied once again
 * `-f [file] [file] or --files [file] [file]` - [required] List of files containing migrations.
 * `-c [string] [string] or --connectionStrings [string] [string]` - [required] List of connection strings to which migrations will be applied.
-* `-s [string] or --strategy [string]` - [default = MigrationResolverAttribute] Select strategy for read migrations.
+* `-s [string] or --strategy [string]` - [default = CSharpClasses] Select strategy for read migrations.
 * `-g  [string] or --group [string]` - If you specify some group or groups (separated by commas), migrations will be filtered by these groups
 * `-t [string] or --tablename [string]` - You can change the name of the table in which the migrations will be stored.
 
@@ -50,14 +50,17 @@ For check available options use command `force-revert --help`.
 
 * `-m [number] or --migrationnumber [number]` - [required] Migration number for the new migration file(s)
 * `-p [file] or --parameters [string]=[string] [string]=[string]` - [required] List of parameters.
-* `-s [string] or --strategy [string]` - [default = MigrationResolverAttribute] Select strategy for read migrations.
+* `-s [string] or --strategy [string]` - [default = CSharpClasses] Select strategy for generate migrations.
+* `-g [string] or --group [string]` - Adding group to new migration.
+* `-i [string] or --issue [string]` - Adding issue to new migration.
+* `-d [string] or --description [string]` - You can specify description for new migration.
 
 ### revert-all
 For check available options use command `force-revert --help`.    
 
 * `-f [file] [file] or --files [file] [file]` - [required] List of files containing migrations.
 * `-c [string] [string] or --connectionStrings [string] [string]` - [required] List of connection strings to which migrations will be applied.
-* `-s [string] or --strategy [string]` - [default = MigrationResolverAttribute] Select strategy for read migrations.
+* `-s [string] or --strategy [string]` - [default = CSharpClasses] Select strategy for read migrations.
 * `-g  [string] or --group [string]` - If you specify some group or groups (separated by commas), migrations will be filtered by these groups
 * `-t [string] or --tablename [string]` - You can change the name of the table in which the migrations will be stored.
 
@@ -83,6 +86,9 @@ For check available options use command `add-migration-profile --help`.
 
 * `-m [number] or --migrationnumber [number]` - [required] Migration number for the new migration file(s)
 * `-p [file] or --profile [file]` - Path to file contains profile (check `Profile file` section below).
+* `-g [string] or --group [string]` - Adding group to new migration.
+* `-i [string] or --issue [string]` - Adding issue to new migration.
+* `-d [string] or --description [string]` - You can specify description for new migration.
 
 ### revert-all-profile
 For check available options use command `revert-all-profile --help`.    
@@ -91,7 +97,7 @@ For check available options use command `revert-all-profile --help`.
 
 ## Strategies
 
-### MigrationResolverAttribute
+### CSharpClasses
 Migrations are organized into C# classes.
 Each class inherits from the `MigrationScript` class from the `PostgreSQL.Migrations` assembly and decorated `MigrationNumber` attribute.
 You must implement the `Up` and `Down` methods, where `Up` returns the SQL script that will be executed during the `Apply operation`, and `Down` returns the SQL script that will be executed during the `Revert operation`.
@@ -127,7 +133,7 @@ constring Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=
 constring Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=seconddatabase
 file ~/project1/Migrations1.dll
 file ~/project2/Migrations2.dll
-strategy MigrationResolverAttribute
+strategy CSharpClasses
 group ProductionMigrations
 ```
 

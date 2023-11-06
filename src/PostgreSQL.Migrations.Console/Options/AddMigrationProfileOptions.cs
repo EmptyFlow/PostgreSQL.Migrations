@@ -14,6 +14,9 @@ namespace PostgreSQL.Migrations.Console.Options {
 		[Option ( 'i', "issue", HelpText = "You can specify issue for new migration." )]
 		public string Issue { get; set; } = "";
 
+		[Option ( 'd', "description", HelpText = "You can specify description for new migration." )]
+		public string Description { get; set; } = "";
+
 	}
 
 }
