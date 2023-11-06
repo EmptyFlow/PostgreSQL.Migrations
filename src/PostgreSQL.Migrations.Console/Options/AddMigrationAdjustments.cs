@@ -13,6 +13,15 @@ namespace PostgreSQL.Migrations.Console.Options {
 		[Option ( 's', "strategy", Default = "MigrationResolverAttribute", HelpText = "Select strategy for adding migration." )]
 		public string Strategy { get; set; } = "";
 
+		[Option ( 'g', "group", HelpText = "You can specify group(s) for new migration." )]
+		public string Group { get; set; } = "";
+
+		[Option ( 'i', "issue", HelpText = "You can specify issue for new migration." )]
+		public string Issue { get; set; } = "";
+
+		[Option ( 'd', "description", HelpText = "You can specify description for new migration." )]
+		public string Description { get; set; } = "";
+
 	}
 
 }

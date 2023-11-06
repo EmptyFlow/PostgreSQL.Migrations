@@ -13,7 +13,7 @@ namespace PostgreSQL.Migrations.Console {
 
 			SystemConsole.WriteLine ( $"Trying to use a strategy: {options.Strategy}..." );
 
-			await resolver.GenerateNewMigrationAsync ( options.Parameters.ToList (), options.MigrationNumber );
+			await resolver.GenerateNewMigrationAsync ( options.Parameters.ToList (), options.MigrationNumber, options.Issue, options.Group, options.Description );
 
 			SystemConsole.WriteLine ( $"Migration with number {options.MigrationNumber} created." );
 

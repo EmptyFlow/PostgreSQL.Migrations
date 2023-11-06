@@ -1,0 +1,1 @@
+CREATE TABLE test(id int4 NOT NULL);

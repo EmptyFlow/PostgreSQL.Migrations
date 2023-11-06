@@ -2,7 +2,7 @@
 
 namespace Migrations.Console.Strategies {
 
-	public static class StarategyPlainSqlFileResolver {
+	public static class StrategyPlainSqlFileResolver {
 
 		public static Task<IEnumerable<IMigrationsAsyncResolver>> Run ( IEnumerable<string> files, string group ) {
 			var resolver = new PlainSqlFileResolver ();

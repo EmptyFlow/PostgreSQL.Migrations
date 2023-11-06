@@ -1,0 +1,9 @@
+constring Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=testplaindatabase
+file migrationconfig
+strategy PlainSql
+genissue https://bugtracker.com/project/3
+gengroup group3
+gendescription Description about migration with number 3
+genparameter migrationfolder=migration{MigrationNumber}
+genparameter folder=migrations
+genparameter config=migrationconfig

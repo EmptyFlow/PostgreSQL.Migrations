@@ -15,6 +15,12 @@ namespace PostgreSQL.Migrations.Console {
 
 		private const string GroupField = "group ";
 
+		private const string GenerationGroupField = "gengroup ";
+
+		private const string IssueField = "genissue ";
+
+		private const string DescriptionField = "gendescription ";
+
 		private const string GenerationParameterField = "genparameter ";
 		
 		private const string MigrationTableField = "migrationtable ";
@@ -55,6 +61,9 @@ namespace PostgreSQL.Migrations.Console {
 			foreach ( var item in content.Replace ( "\r", "" ).Split ( "\n" ) ) {
 				if ( item.StartsWith ( GenerationParameterField ) ) parameters.Add ( item.Replace ( GenerationParameterField, "" ) );
 				if ( item.StartsWith ( StrategiesField ) ) adjustmentsModel.Strategy = item.Replace ( StrategiesField, "" );
+				if ( item.StartsWith ( IssueField ) ) adjustmentsModel.Issue = item.Replace ( IssueField, "" );
+				if ( item.StartsWith ( DescriptionField ) ) adjustmentsModel.Description = item.Replace ( DescriptionField, "" );
+				if ( item.StartsWith ( GenerationGroupField ) ) adjustmentsModel.Group = item.Replace ( GenerationGroupField, "" );
 			}
 
 			adjustmentsModel.Parameters = parameters;

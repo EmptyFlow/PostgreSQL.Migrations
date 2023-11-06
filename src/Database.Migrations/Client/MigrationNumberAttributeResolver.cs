@@ -121,12 +121,10 @@ namespace Database.Migrations {
 			return value?.Replace ( $"{name}=", "" ) ?? "";
 		}
 
-		public async Task GenerateNewMigrationAsync ( List<string> parameters, int migrationNumber ) {
+		public async Task GenerateNewMigrationAsync ( List<string> parameters, int migrationNumber, string issue, string groups, string description ) {
 			var folder = GetStringValueFromParameters ( "folder", parameters, true, "path to folder where migrations will be generated" );
 			var fileNamespace = GetStringValueFromParameters ( "namespace", parameters, false );
 			var customClassName = GetStringValueFromParameters ( "classname", parameters, false );
-			var issue = GetStringValueFromParameters ( "issue", parameters, false );
-			var groups = GetStringValueFromParameters ( "groups", parameters, false );
 
 			if ( !Directory.Exists ( folder ) ) throw new Exception ( $"Folder {folder} don't exists!" );
 
@@ -152,6 +150,7 @@ namespace Database.Migrations {
 				.Replace ( "{MigrationNumber}", migrationNumber.ToString () );
 			template = ReplaceOptionalAttribute ( "{Issue}", template, issue );
 			template = ReplaceOptionalAttribute ( "{Group}", template, groups );
+			template = ReplaceOptionalAttribute ( "{Description}", template, description );
 
 			var filePath = Path.Combine ( folder, migrationsClassName + ".cs" );
 			await File.WriteAllTextAsync ( filePath, template );

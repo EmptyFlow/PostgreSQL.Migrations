@@ -1,0 +1,3 @@
+upfile migrationup.sql
+downfile migrationdown.sql
+metafile meta

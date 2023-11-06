@@ -30,7 +30,7 @@ namespace PostgreSQL.Migrations.Console {
 					migrationResolvers.AddRange ( await StrategyMigrationResolverAttribute.Run ( files, group ) );
 					break;
 				case PlainSqlStrategy:
-					migrationResolvers.AddRange ( await StarategyPlainSqlFileResolver.Run ( files, group ) );
+					migrationResolvers.AddRange ( await StrategyPlainSqlFileResolver.Run ( files, group ) );
 					break;
 				default:
 					break;

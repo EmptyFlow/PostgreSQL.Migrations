@@ -1,6 +1,5 @@
 ﻿using Database.Migrations.Client;
 using Database.Migrations.Readers;
-using System.Linq;
 
 namespace Database.Migrations {
 
@@ -24,18 +23,14 @@ namespace Database.Migrations {
 			return value?.Replace ( $"{name}=", "" ) ?? "";
 		}
 
-		public async Task GenerateNewMigrationAsync ( List<string> parameters, int migrationNumber ) {
-			var folder = GetStringValueFromParameters ( "folder", parameters, true, "path to folder where migrations will be generated" );
-			var configFile = GetStringValueFromParameters ( "config", parameters, true, "path to folder where migrations will be generated" );
+		public async Task GenerateNewMigrationAsync ( List<string> parameters, int migrationNumber, string issue, string groups, string description ) {
+			var configFile = GetStringValueFromParameters ( "config", parameters, true, "configuration file name" );
 			var customFolderName = GetStringValueFromParameters ( "migrationfolder", parameters, true, "name of migration folder" );
-			var issue = GetStringValueFromParameters ( "issue", parameters, false );
-			var groups = GetStringValueFromParameters ( "groups", parameters, false );
 
-			if ( !Directory.Exists ( folder ) ) throw new Exception ( $"Folder {folder} don't exists!" );
-			if ( !File.Exists ( configFile ) ) throw new Exception ( $"Configuration file {configFile} don't exists!" );
+			if ( !File.Exists ( Path.GetFullPath ( configFile! ) ) ) throw new Exception ( $"Configuration file {configFile} don't exists!" );
 
-			var configuration = await ReadConfigFile ( configFile );
-			var containingFolder = Path.GetFullPath ( configuration.ContainingFolder );
+			var configuration = await ReadConfigFile ( configFile! );
+			var containingFolder = Path.GetDirectoryName ( Path.GetFullPath ( configFile! ) ) ?? throw new ArgumentException ( $"Path to config file {configFile} irrelevant!" );
 			if ( !Directory.Exists ( containingFolder ) ) {
 				Console.WriteLine ( $"Containing folder {containingFolder} is not exists." );
 				return;
@@ -50,7 +45,7 @@ namespace Database.Migrations {
 			};
 			if ( !string.IsNullOrEmpty ( issue ) ) metafileLines.Add ( $"issue {issue}" );
 			if ( !string.IsNullOrEmpty ( groups ) ) metafileLines.Add ( $"group {groups}" );
-			metafileLines.Add ( $"description Description for migration" );
+			if ( !string.IsNullOrEmpty ( description ) ) metafileLines.Add ( $"description {description}" );
 
 			await File.WriteAllTextAsync ( Path.Combine ( migrationFolder, configuration.MetaFileName ), string.Join ( '\n', metafileLines ) );
 			Console.WriteLine ( $"Migration files {configuration.UpFileName}, {configuration.DownFileName}, {configuration.MetaFileName} in folder {migrationFolder} created." );
@@ -61,7 +56,8 @@ namespace Database.Migrations {
 
 			foreach ( string configFile in m_fileNames ) {
 				var config = await ReadConfigFile ( configFile );
-				var directories = Directory.EnumerateDirectories ( Path.GetFullPath ( config.ContainingFolder ) );
+				var directoryPath = Path.GetDirectoryName ( Path.GetFullPath ( configFile ) ) ?? throw new ArgumentException ( $"Path to config file {configFile} irrelevant!" );
+				var directories = Directory.EnumerateDirectories ( directoryPath );
 				foreach ( string directory in directories ) {
 					var metaPath = Path.Combine ( directory, config.MetaFileName );
 					var upFilePath = Path.Combine ( directory, config.UpFileName );
