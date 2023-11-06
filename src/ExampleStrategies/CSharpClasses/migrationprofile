@@ -1,0 +1,7 @@
+strategy CSharpClasses
+genissue https://bugtracker.com/project/3
+gengroup group3
+gendescription Description about migration with number 3
+genparameter classname=Migration{MigrationNumber}
+genparameter folder=.
+genparameter namespace=MyProject.Migrations

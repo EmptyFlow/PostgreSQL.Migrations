@@ -7,15 +7,15 @@ namespace PostgreSQL.Migrations.Console {
 
 	public static class MigrationResolver {
 
-		private const string MigrationResolverAttributeStrategy = "MigrationResolverAttribute";
+		private const string CSharpClassesStrategy = "CSharpClasses";
 
 		private const string PlainSqlStrategy = "PlainSql";
 
-		public const string DefaultStrategy = MigrationResolverAttributeStrategy;
+		public const string DefaultStrategy = CSharpClassesStrategy;
 
 		public static IMigrationsAsyncResolver GetResolver ( string strategy ) {
 			return strategy switch {
-				MigrationResolverAttributeStrategy => new MigrationNumberAttributeResolver (),
+				CSharpClassesStrategy => new MigrationNumberAttributeResolver (),
 				PlainSqlStrategy => new PlainSqlFileResolver (),
 				_ => throw new NotSupportedException ( $"Strategy {strategy} not supported!" )
 			};
@@ -26,8 +26,8 @@ namespace PostgreSQL.Migrations.Console {
 			var migrationResolvers = new List<IMigrationsAsyncResolver> ();
 
 			switch ( strategy ) {
-				case MigrationResolverAttributeStrategy:
-					migrationResolvers.AddRange ( await StrategyMigrationResolverAttribute.Run ( files, group ) );
+				case CSharpClassesStrategy:
+					migrationResolvers.AddRange ( await StrategyCSharpClassesResolver.Run ( files, group ) );
 					break;
 				case PlainSqlStrategy:
 					migrationResolvers.AddRange ( await StrategyPlainSqlFileResolver.Run ( files, group ) );
