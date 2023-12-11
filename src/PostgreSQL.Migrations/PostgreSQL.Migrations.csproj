@@ -1,41 +1,42 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net7.0;net6.0</TargetFrameworks>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Title>Migration library for PostgresSQL</Title>
-    <Company>EmptyFlow</Company>
-    <Description>Library that implements the mechanism of migrations for the database PostgresSQL</Description>
-    <Copyright>EmptyFlow</Copyright>
-    <PackageProjectUrl>https://github.com/EmptyFlow/PostgreSQL.Migrations</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/EmptyFlow/PostgreSQL.Migrations</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageTags>migrations;postgressql</PackageTags>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>0.0.8</Version>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Title>Migration library for PostgresSQL</Title>
+		<Company>EmptyFlow</Company>
+		<Description>Library that implements the mechanism of migrations for the database PostgresSQL</Description>
+		<Copyright>EmptyFlow</Copyright>
+		<PackageProjectUrl>https://github.com/EmptyFlow/PostgreSQL.Migrations</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/EmptyFlow/PostgreSQL.Migrations</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>migrations;postgressql</PackageTags>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<Version>0.0.8</Version>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="..\..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Npgsql" Version="7.0.4" Condition="'$(TargetFramework)' == 'net7.0'" />
-    <PackageReference Include="Npgsql" Version="6.0.9" Condition="'$(TargetFramework)' == 'net6.0'" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Npgsql" Version="7.0.4" Condition="'$(TargetFramework)' == 'net7.0'" />
+		<PackageReference Include="Npgsql" Version="6.0.9" Condition="'$(TargetFramework)' == 'net6.0'" />
+		<PackageReference Include="Npgsql" Version="8.0.1" Condition="'$(TargetFramework)' == 'net8.0'" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Database.Migrations\Database.Migrations.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Database.Migrations\Database.Migrations.csproj" />
+	</ItemGroup>
 
 </Project>
