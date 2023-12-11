@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Title>Console application for run migrations</Title>
-    <Version>0.0.6</Version>
+    <Version>0.0.7</Version>
     <AssemblyName>dbmigrations</AssemblyName>
   </PropertyGroup>
 
