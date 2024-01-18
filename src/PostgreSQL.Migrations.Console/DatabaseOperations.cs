@@ -1,6 +1,9 @@
 ﻿using PostgreSQL.Migrations.Console.Options;
 using Database.Migrations;
 using SystemConsole = System.Console;
+using Migrations.Console.Options;
+using System.Text.Json;
+using Migrations.Console.JsonSerializers;
 
 namespace PostgreSQL.Migrations.Console {
 
@@ -112,6 +115,25 @@ namespace PostgreSQL.Migrations.Console {
 			var model = await ReadModel<RevertAllOptions> ( options.Profile );
 
 			return await RevertAllMigrations ( model );
+		}
+
+		public static async Task PackMigrations ( PackMigrationsOptions options ) {
+			var migrationResolvers = await MigrationResolver.GetResolvers ( options.Files, options.Group, options.Strategy );
+
+			var result = new List<AvailableMigration> ();
+
+			foreach ( var resolver in migrationResolvers ) {
+				result.AddRange ( await resolver.GetMigrationsAsync () );
+			}
+
+			var content = JsonSerializer.Serialize ( result, typeof ( List<AvailableMigration> ), PackSerializer.Default );
+			try {
+				await File.WriteAllTextAsync ( options.ResultPath, content );
+			} catch ( Exception exception ) {
+				var errorMessage = $"Error while saving file `{options.ResultPath}`: {exception.Message}";
+				SystemConsole.WriteLine ( errorMessage );
+				throw new Exception ( errorMessage );
+			}
 		}
 
 	}
