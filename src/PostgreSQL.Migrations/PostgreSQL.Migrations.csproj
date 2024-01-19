@@ -14,7 +14,7 @@
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>migrations;postgressql</PackageTags>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<Version>0.0.8</Version>
+		<Version>0.0.9</Version>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 	</PropertyGroup>
 
@@ -33,10 +33,13 @@
 		<PackageReference Include="Npgsql" Version="7.0.4" Condition="'$(TargetFramework)' == 'net7.0'" />
 		<PackageReference Include="Npgsql" Version="6.0.9" Condition="'$(TargetFramework)' == 'net6.0'" />
 		<PackageReference Include="Npgsql" Version="8.0.1" Condition="'$(TargetFramework)' == 'net8.0'" />
+		<PackageReference Include="Teronis.MSBuild.Packaging.ProjectBuildInPackage" Version="1.0.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Database.Migrations\Database.Migrations.csproj" />
+		<ProjectReference Include="..\Database.Migrations\Database.Migrations.csproj" PrivateAssets="all" />
 	</ItemGroup>
-
 </Project>
