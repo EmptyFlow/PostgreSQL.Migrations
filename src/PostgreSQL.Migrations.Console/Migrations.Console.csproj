@@ -17,6 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Database.Migrations\Database.Migrations.csproj" />
 		<ProjectReference Include="..\PostgreSQL.Migrations\PostgreSQL.Migrations.csproj" />
 	</ItemGroup>
 

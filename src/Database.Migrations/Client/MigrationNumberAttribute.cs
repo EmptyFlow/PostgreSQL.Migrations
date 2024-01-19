@@ -1,4 +1,4 @@
-﻿namespace PostgreSQL.Migrations.Client {
+﻿namespace Database.Migrations.Client {
 
 
     [AttributeUsage ( AttributeTargets.Class, AllowMultiple = false, Inherited = false )]
