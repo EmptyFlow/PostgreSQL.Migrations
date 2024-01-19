@@ -14,7 +14,7 @@
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>migrations;postgressql</PackageTags>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<Version>0.0.9</Version>
+		<Version>0.0.10</Version>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 	</PropertyGroup>
 

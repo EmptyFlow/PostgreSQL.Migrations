@@ -8,13 +8,11 @@ namespace Database.Migrations {
 	/// </summary>
 	public class MigrationNumberAttributeResolver : IMigrationsAsyncResolver {
 
-		private const string AttributeName = "MigrationNumberAttribute";
+		private const string RequiredPropertyName = "MigrationNumber";
 
 		private readonly List<Assembly> m_assemblies = new ();
 
 		private string m_group = "";
-
-		private Type? m_attributeType;
 
 		private const string m_failedMessage = nameof ( MigrationNumberAttributeResolver ) + ": Failed get migrations";
 
@@ -35,11 +33,11 @@ namespace Database.Migrations {
 					.ToList ();
 
 				foreach ( Type type in types ) {
-					var (number, issue, group) = GetMigrationDataFromType ( type );
-					var description = type.GetCustomAttribute<DescriptionAttribute> ()?.Description ?? "";
+					var migration = Activator.CreateInstance ( type );
+					if ( migration == null ) continue;
 
-					var script = Activator.CreateInstance ( type );
-					if ( script == null ) continue;
+					var (number, issue, group) = GetMigrationDataFromType ( migration, type );
+					var description = type.GetCustomAttribute<DescriptionAttribute> ()?.Description ?? "";
 
 					if ( !CheckInGroup ( group ) ) continue;
 
@@ -49,8 +47,8 @@ namespace Database.Migrations {
 							Issue = issue,
 							Description = description,
 							Group = group,
-							UpScript = InvokeMigrationMethod ( "Up", script ),
-							DownScript = InvokeMigrationMethod ( "Down", script ),
+							UpScript = InvokeMigrationMethod ( "Up", migration ),
+							DownScript = InvokeMigrationMethod ( "Down", migration ),
 						}
 					);
 				}
@@ -59,14 +57,12 @@ namespace Database.Migrations {
 			return Task.FromResult ( result.AsEnumerable () );
 		}
 
-		private static bool IsHasMigrationNumberAttribute ( Type type ) => type.GetCustomAttributes ().Any ( b => b.GetType ().Name == AttributeName );
+		private static bool IsHasMigrationNumberAttribute ( Type type ) => type.GetProperties ().Any ( b => b.Name == RequiredPropertyName );
 
-		private (int number, string issue, string group) GetMigrationDataFromType ( Type type ) {
-			var attribute = type.GetCustomAttributes ().First ( b => b.GetType ().Name == AttributeName );
-
-			var migrationNumber = GetValueFromProperty<int> ( "MigrationNumber", attribute );
-			var issue = GetValueFromProperty<string> ( "Issue", attribute );
-			var group = GetValueFromProperty<string> ( "Group", attribute );
+		private static (int number, string issue, string group) GetMigrationDataFromType ( object script, Type type ) {
+			var migrationNumber = GetValueFromProperty<int> ( "MigrationNumber", script, type, required: true );
+			var issue = GetValueFromProperty<string?> ( "Issue", script, type ) ?? "";
+			var group = GetValueFromProperty<string?> ( "Group", script, type ) ?? "";
 
 			return (migrationNumber, issue, group);
 		}
@@ -88,18 +84,18 @@ namespace Database.Migrations {
 			return (string) result;
 		}
 
-		private T GetValueFromProperty<T> ( string propertyName, Attribute attribute ) {
-			if ( m_attributeType == null ) m_attributeType = attribute.GetType ();
-
-			var property = m_attributeType.GetProperty ( propertyName, BindingFlags.Instance | BindingFlags.Public );
-			if ( property == null ) {
-				Console.WriteLine ( $"Can't read property '{propertyName}' from migration attribute {m_attributeType.FullName}!" );
+		private static T? GetValueFromProperty<T> ( string propertyName, object instance, Type type, bool required = false ) {
+			var property = type.GetProperty ( propertyName, BindingFlags.Instance | BindingFlags.Public ); // first step instance property
+			if ( property == null ) property = type.GetProperty ( propertyName, BindingFlags.Static | BindingFlags.Public ); // second step static property
+			if ( property == null && required ) {
+				Console.WriteLine ( $"Can't read property '{propertyName}' from migration attribute {type.FullName}!" );
 				throw new Exception ( m_failedMessage );
 			}
+			if ( property == null && !required ) return default;
 
-			var result = property.GetGetMethod ()!.Invoke ( attribute, null );
+			var result = property!.GetGetMethod ()!.Invoke ( instance, null );
 			if ( result == null ) {
-				Console.WriteLine ( $"Value from property '{propertyName}' in class {m_attributeType.FullName} is null that is not compatible!" );
+				Console.WriteLine ( $"Value from property '{propertyName}' in class {type.FullName} is null that is not compatible!" );
 				throw new Exception ( m_failedMessage );
 			}
 
