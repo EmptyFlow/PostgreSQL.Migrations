@@ -1,25 +1,35 @@
 ﻿using Database.Migrations;
-using Database.Migrations.Client;
 using System.Reflection;
 using Xunit;
 
 namespace PostgreSQL.Migrations.UnitTests.UnitTests {
 
-    [MigrationNumber ( 1, "http://issue/1", "firstGroup" )]
-    public class InitialMigration : MigrationScript {
+	public class InitialMigration {
 
-        public override string Down () => "initial migration down script";
+		public int MigrationNumber => 1;
 
-        public override string Up () => "initial migration up script";
+		public string Issue => "http://issue/1";
+
+		public string Group => "firstGroup";
+
+		public string Down () => "initial migration down script";
+
+        public string Up () => "initial migration up script";
 
     }
 
-    [MigrationNumber ( 2, "http://issue/2", "LastGroup, Lalala" )]
-    public class SecondMigration : MigrationScript {
+    public class SecondMigration {
 
-        public override string Down () => "second migration down script";
+		public static int MigrationNumber => 2;
 
-        public override string Up () => "second migration up script";
+		public static string Issue => "http://issue/2";
+
+		public static string Group => "lastGroup";
+
+
+		public string Down () => "second migration down script";
+
+        public string Up () => "second migration up script";
 
     }
 
