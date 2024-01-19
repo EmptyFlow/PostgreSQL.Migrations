@@ -10,7 +10,7 @@ namespace PostgreSQL.Migrations.Console.Options {
 		[Option ( 'p', "parameters", Required = true, HelpText = "List of parameters." )]
 		public IEnumerable<string> Parameters { get; set; } = Enumerable.Empty<string> ();
 
-		[Option ( 's', "strategy", Default = "MigrationResolverAttribute", HelpText = "Select strategy for adding migration." )]
+		[Option ( 's', "strategy", Default = MigrationResolver.DefaultStrategy, HelpText = "Select strategy for adding migration." )]
 		public string Strategy { get; set; } = "";
 
 		[Option ( 'g', "group", HelpText = "You can specify group(s) for new migration." )]
