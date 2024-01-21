@@ -139,6 +139,21 @@ namespace PostgreSQL.Migrations.Console {
 			}
 		}
 
+		public static async Task PackMigrationsProfile ( PackMigrationsProfileOptions options ) {
+			var profileName = string.IsNullOrEmpty ( options.Profile ) ? ProfileReader.DefaultProfileName : options.Profile;
+
+			if ( !File.Exists ( profileName ) ) {
+				SystemConsole.WriteLine ( $"Profile `{profileName}` is not found!" );
+				throw new Exception ( $"Profile `{profileName}` is not found!" );
+			}
+
+			var model = ProfileReader.ReadPackMigrations<PackMigrationsOptions> ( await File.ReadAllTextAsync ( profileName ) );
+
+			if ( string.IsNullOrEmpty ( model.Strategy ) ) model.Strategy = MigrationResolver.DefaultStrategy;
+
+			await PackMigrations ( model );
+		}
+
 	}
 
 }

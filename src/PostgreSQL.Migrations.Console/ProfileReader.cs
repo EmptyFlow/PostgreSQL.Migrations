@@ -1,4 +1,5 @@
-﻿using PostgreSQL.Migrations.Console.Options;
+﻿using Migrations.Console.Options;
+using PostgreSQL.Migrations.Console.Options;
 
 namespace PostgreSQL.Migrations.Console {
 
@@ -16,6 +17,8 @@ namespace PostgreSQL.Migrations.Console {
 		private const string GroupField = "group ";
 
 		private const string GenerationGroupField = "gengroup ";
+
+		private const string ResultFileField = "resultfile ";
 
 		private const string IssueField = "genissue ";
 
@@ -67,6 +70,26 @@ namespace PostgreSQL.Migrations.Console {
 			}
 
 			adjustmentsModel.Parameters = parameters;
+
+			return model;
+		}
+
+		/// <summary>
+		/// Read profile from file.
+		/// </summary>
+		/// <param name="fileName">File name.</param>
+		public static T ReadPackMigrations<T> ( string content ) where T : PackMigrationsOptions, new() {
+			var model = new T ();
+			var packModel = (PackMigrationsOptions) model;
+			var files = new List<string> ();
+			foreach ( var item in content.Replace ( "\r", "" ).Split ( "\n" ) ) {
+				if ( item.StartsWith ( StrategiesField ) ) packModel.Strategy = item.Replace ( StrategiesField, "" );
+				if ( item.StartsWith ( FilesField ) ) files.Add ( item.Replace ( FilesField, "" ) );
+				if ( item.StartsWith ( GenerationGroupField ) ) packModel.Group = item.Replace ( GenerationGroupField, "" );
+				if ( item.StartsWith ( ResultFileField ) ) packModel.ResultPath = item.Replace ( ResultFileField, "" );
+			}
+
+			packModel.Files = files;
 
 			return model;
 		}
