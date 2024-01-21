@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
+using System.Runtime.Loader;
 
 namespace Database.Migrations {
 
@@ -10,13 +11,13 @@ namespace Database.Migrations {
 
 		private const string RequiredPropertyName = "MigrationNumber";
 
-		private readonly List<Assembly> m_assemblies = new ();
+		private readonly List<string> m_files = new ();
 
 		private string m_group = "";
 
 		private const string m_failedMessage = nameof ( MigrationNumberAttributeResolver ) + ": Failed get migrations";
 
-		public void AddAssemblies ( IEnumerable<Assembly> assemblies ) => m_assemblies.AddRange ( assemblies );
+		public void AddFiles ( IEnumerable<string> files ) => m_files.AddRange ( files );
 
 		public void SetGroup ( string group ) => m_group = group;
 
@@ -27,7 +28,13 @@ namespace Database.Migrations {
 		public Task<IEnumerable<AvailableMigration>> GetMigrationsAsync () {
 			var result = new List<AvailableMigration> ();
 
-			foreach ( Assembly assembly in m_assemblies ) {
+			foreach ( var file in m_files ) {
+				var loadContext = new AssemblyLoadContext ( "MigrationLoadContext" + Path.GetFileName ( file ) );
+				var pathToAssembly = Path.GetDirectoryName ( file ) ?? "";
+				loadContext.Resolving += ( AssemblyLoadContext context, AssemblyName assemblyName ) => {
+					return context.LoadFromAssemblyPath ( Path.Combine ( pathToAssembly, $"{assemblyName.Name}.dll" ) );
+				};
+				var assembly = loadContext.LoadFromAssemblyPath ( file );
 				var types = assembly.GetTypes ()
 					.Where ( IsHasMigrationNumberAttribute )
 					.ToList ();

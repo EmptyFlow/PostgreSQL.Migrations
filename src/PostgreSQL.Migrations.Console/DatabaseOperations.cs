@@ -126,9 +126,12 @@ namespace PostgreSQL.Migrations.Console {
 				result.AddRange ( await resolver.GetMigrationsAsync () );
 			}
 
+			SystemConsole.WriteLine ( $"Starting operation Pack..." );
 			var content = JsonSerializer.Serialize ( result, typeof ( List<AvailableMigration> ), PackSerializer.Default );
 			try {
 				await File.WriteAllTextAsync ( options.ResultPath, content );
+				SystemConsole.WriteLine ( $"File saved by path: {Path.GetFullPath ( options.ResultPath )}" );
+				SystemConsole.WriteLine ( $"Operation Pack is completed!" );
 			} catch ( Exception exception ) {
 				var errorMessage = $"Error while saving file `{options.ResultPath}`: {exception.Message}";
 				SystemConsole.WriteLine ( errorMessage );
