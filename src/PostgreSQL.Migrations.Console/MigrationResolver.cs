@@ -11,12 +11,15 @@ namespace PostgreSQL.Migrations.Console {
 
 		private const string PlainSqlStrategy = "PlainSql";
 
+		private const string PlainPackStrategy = "Packed";
+
 		public const string DefaultStrategy = CSharpClassesStrategy;
 
 		public static IMigrationsAsyncResolver GetResolver ( string strategy ) {
 			return strategy switch {
 				CSharpClassesStrategy => new MigrationNumberAttributeResolver (),
 				PlainSqlStrategy => new PlainSqlFileResolver (),
+				PlainPackStrategy => new PackFileResolver(),
 				_ => throw new NotSupportedException ( $"Strategy {strategy} not supported!" )
 			};
 		}
@@ -32,8 +35,10 @@ namespace PostgreSQL.Migrations.Console {
 				case PlainSqlStrategy:
 					migrationResolvers.AddRange ( await StrategyPlainSqlFileResolver.Run ( files, group ) );
 					break;
-				default:
+				case PlainPackStrategy:
+					migrationResolvers.AddRange ( await StrategyPackedFileResolver.Run ( files, group ) );
 					break;
+				default: throw new NotSupportedException ( $"Strategy {strategy} not supported!" );
 			}
 
 			SystemConsole.WriteLine ( $"Strategy {strategy} applied!" );

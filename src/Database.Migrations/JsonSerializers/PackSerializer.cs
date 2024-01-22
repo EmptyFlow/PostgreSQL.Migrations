@@ -1,7 +1,6 @@
-﻿using Database.Migrations;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace Migrations.Console.JsonSerializers {
+namespace Database.Migrations.JsonSerializers {
 
 	[JsonSerializable ( typeof ( List<AvailableMigration> ) )]
 	[JsonSerializable ( typeof ( AvailableMigration ) )]

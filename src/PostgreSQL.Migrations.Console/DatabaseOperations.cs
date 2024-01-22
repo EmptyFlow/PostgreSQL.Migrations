@@ -3,7 +3,7 @@ using Database.Migrations;
 using SystemConsole = System.Console;
 using Migrations.Console.Options;
 using System.Text.Json;
-using Migrations.Console.JsonSerializers;
+using Database.Migrations.JsonSerializers;
 
 namespace PostgreSQL.Migrations.Console {
 
