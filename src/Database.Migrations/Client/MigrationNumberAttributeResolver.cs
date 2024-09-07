@@ -31,6 +31,7 @@ namespace Database.Migrations {
 			foreach ( var file in m_files ) {
 				var loadContext = new AssemblyLoadContext ( "MigrationLoadContext" + Path.GetFileName ( file ) );
 				var fullPath = Path.GetFullPath ( file );
+				Console.WriteLine ( $"Try to load dll {fullPath}" );
 				var pathToAssembly = Path.GetDirectoryName ( fullPath ) ?? "";
 				loadContext.Resolving += ( AssemblyLoadContext context, AssemblyName assemblyName ) => {
 					return context.LoadFromAssemblyPath ( Path.Combine ( pathToAssembly, $"{assemblyName.Name}.dll" ) );
