@@ -30,11 +30,12 @@ namespace Database.Migrations {
 
 			foreach ( var file in m_files ) {
 				var loadContext = new AssemblyLoadContext ( "MigrationLoadContext" + Path.GetFileName ( file ) );
-				var pathToAssembly = Path.GetDirectoryName ( file ) ?? "";
+				var fullPath = Path.GetFullPath ( file );
+				var pathToAssembly = Path.GetDirectoryName ( fullPath ) ?? "";
 				loadContext.Resolving += ( AssemblyLoadContext context, AssemblyName assemblyName ) => {
 					return context.LoadFromAssemblyPath ( Path.Combine ( pathToAssembly, $"{assemblyName.Name}.dll" ) );
 				};
-				var assembly = loadContext.LoadFromAssemblyPath ( file );
+				var assembly = loadContext.LoadFromAssemblyPath ( fullPath );
 				var types = assembly.GetTypes ()
 					.Where ( IsHasMigrationNumberAttribute )
 					.ToList ();
