@@ -31,7 +31,7 @@ namespace PostgreSQL.Migrations.Console {
 		private static async Task<T> ReadModel<T> ( string profile ) where T : AddMigrationAdjustments, new() {
 			var profileName = string.IsNullOrEmpty ( profile ) ? ProfileReader.DefaultProfileName : profile;
 
-			if ( !File.Exists ( profileName ) ) {
+			if ( !File.Exists ( Path.GetFullPath ( profileName ) ) ) {
 				SystemConsole.WriteLine ( $"Profile `{profileName}` is not found!" );
 				throw new Exception ( $"Profile `{profileName}` is not found!" );
 			}

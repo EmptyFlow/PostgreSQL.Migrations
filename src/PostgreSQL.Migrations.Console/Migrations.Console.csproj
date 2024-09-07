@@ -6,14 +6,14 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<Title>Console application for run migrations</Title>
-		<Version>0.0.8</Version>
+		<Version>0.0.9</Version>
 		<AssemblyName>dbmigrations</AssemblyName>
 		<PublishAot>true</PublishAot>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="CommandLineParser" Version="2.9.1" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
