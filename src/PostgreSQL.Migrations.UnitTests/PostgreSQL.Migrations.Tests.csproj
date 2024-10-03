@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PostgreSQL.Migrations\PostgreSQL.Migrations.csproj" />
+    <ProjectReference Include="..\TestMigrationAssembly\TestMigrationAssembly.csproj" />
   </ItemGroup>
 
 </Project>
