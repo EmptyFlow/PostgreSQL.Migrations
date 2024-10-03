@@ -16,7 +16,7 @@
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<Version>0.0.10</Version>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<IsTrimmable>true</IsTrimmable>
+		<!--<IsTrimmable>true</IsTrimmable>-->
 	</PropertyGroup>
 
 	<ItemGroup>
