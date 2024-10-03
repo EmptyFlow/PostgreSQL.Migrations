@@ -1,11 +1,23 @@
-﻿using PostgreSQL.Migrations.Client;
-
-namespace {Namespace}
+﻿namespace {Namespace}
 {
 
-    [MigrationNumber({MigrationNumber}{Issue}{Group})]
-    public class {ClassName} : MigrationScript
+    public class {ClassName}
     {
+
+        /// <summary>
+        /// Migration Number.
+        /// </summary>
+        public static int MigrationNumber => {MigrationNumber};
+
+        /// <summary>
+        /// Link to issue in but tracker (or link to something else).
+        /// </summary>
+        public static string Issue => "{Issue}";
+
+        /// <summary>
+        /// Link migration with group(s). (can be help if required filter migration by client/server/application etc).
+        /// </summary>
+        public static string Group => "{Group}";
 
         /// <summary>
         /// The Down method must return SQL commands to return the database to the state before the SQL commands from the Up method were executed.
