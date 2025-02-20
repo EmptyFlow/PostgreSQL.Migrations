@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
+		<TargetFrameworks>net9.0;net8.0;net7.0;net6.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -14,9 +14,8 @@
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>migrations;postgressql</PackageTags>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<Version>0.0.11</Version>
+		<Version>0.0.12</Version>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<!--<IsTrimmable>true</IsTrimmable>-->
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -33,25 +32,12 @@
 	<ItemGroup>
 		<PackageReference Include="Npgsql" Version="7.0.8" Condition="'$(TargetFramework)' == 'net7.0'" />
 		<PackageReference Include="Npgsql" Version="6.0.12" Condition="'$(TargetFramework)' == 'net6.0'" />
-		<PackageReference Include="Npgsql" Version="8.0.4" Condition="'$(TargetFramework)' == 'net8.0'" />
+		<PackageReference Include="Npgsql" Version="8.0.6" Condition="'$(TargetFramework)' == 'net8.0'" />
+		<PackageReference Include="Npgsql" Version="9.0.2" Condition="'$(TargetFramework)' == 'net9.0'" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="../Database.Migrations/Runner/ISqlRunner.cs" Link="Links\ISqlRunner.cs" />
-		<Compile Include="../Database.Migrations/Runner/IMigrationsAsyncResolver.cs" Link="Links\IMigrationsAsyncResolver.cs" />
-		<Compile Include="../Database.Migrations/Runner/IMigrationRunnerLogger.cs" Link="Links\IMigrationRunnerLogger.cs" />
-		<Compile Include="../Database.Migrations/Runner/ConsoleMigrationRunnerLogger.cs" Link="Links\ConsoleMigrationRunnerLogger.cs" />
-		<Compile Include="../Database.Migrations/Runner/AvailableMigration.cs" Link="Links\AvailableMigration.cs" />
-		<Compile Include="../Database.Migrations/Runner/MigrationRunner.cs" Link="Links\MigrationRunner.cs" />
-		<Compile Include="../Database.Migrations/Readers/PlainSqlConfigReader.cs" Link="Links\PlainSqlConfigReader.cs" />
-		<Compile Include="../Database.Migrations/Readers/PlainSqlMetadataReader.cs" Link="Links\PlainSqlMetadataReader.cs" />
-		<Compile Include="../Database.Migrations/JsonSerializers/PackSerializer.cs" Link="Links\PackSerializer.cs" />
-		<Compile Include="../Database.Migrations/Client/MigrationNumberAttributeResolver.cs" Link="Links\MigrationNumberAttributeResolver.cs" />
-		<Compile Include="../Database.Migrations/Client/PackFileResolver.cs" Link="Links\PackFileResolver.cs" />
-		<Compile Include="../Database.Migrations/Client/PlainSqlConfigFile.cs" Link="Links\PlainSqlConfigFile.cs" />
-		<Compile Include="../Database.Migrations/Client/PlainSqlFileResolver.cs" Link="Links\PlainSqlFileResolver.cs" />
-		<Compile Include="../Database.Migrations/Client/PlainSqlMetadataFile.cs" Link="Links\PlainSqlMetadataFile.cs" />
-		<Compile Include="../Database.Migrations/Client/ResolverHelpers.cs" Link="Links\ResolverHelpers.cs" />
+		<Compile Include="../Database.Migrations/Client/*.cs;../Database.Migrations/JsonSerializers/*.cs;../Database.Migrations/Readers/*.cs;../Database.Migrations/Runner/*.cs" />
 
 		<EmbeddedResource Include="../Database.Migrations/Client/Templates/WithNamespaceTemplate.template" Link="WithNamespaceTemplate.template">
 			<LogicalName>Database.Migrations.Client.Templates.WithNamespaceTemplate.template</LogicalName>
@@ -59,9 +45,5 @@
 		<EmbeddedResource Include="../Database.Migrations/Client/Templates/WithoutNamespaceTemplate.template" Link="WithoutNamespaceTemplate.template">
 			<LogicalName>Database.Migrations.Client.Templates.WithoutNamespaceTemplate.template</LogicalName>
 		</EmbeddedResource>
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Links\" />
 	</ItemGroup>
 </Project>
