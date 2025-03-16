@@ -110,6 +110,11 @@ namespace PostgreSQL.Migrations.Console {
 		}
 
 		public static async Task PackMigrations ( PackMigrationsOptions options ) {
+			if ( string.IsNullOrEmpty ( options?.ResultPath ) ) {
+				SystemConsole.WriteLine ( $"Parameter `resultfile` is not defined!" );
+				return;
+			}
+
 			var migrationResolvers = await MigrationResolver.GetResolvers ( options.Files, options.Group, options.Strategy );
 
 			var result = new List<AvailableMigration> ();
