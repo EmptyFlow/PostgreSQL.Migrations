@@ -29,7 +29,7 @@ namespace PostgreSQL.Migrations.Console {
 			return sqlRunner;
 		}
 
-		public static async Task<int> ApplyMigrationsToDatabase ( ApplyOptions options ) {
+		public static async Task ApplyMigrationsToDatabase ( ApplyOptions options ) {
 			var migrationResolvers = await MigrationResolver.GetResolvers ( options.Files, options.Group, options.Strategy );
 
 			var runner = await GetRunner ( options.ConnectionStrings, migrationResolvers );
@@ -37,52 +37,46 @@ namespace PostgreSQL.Migrations.Console {
 			SystemConsole.WriteLine ( $"Starting operation Apply..." );
 			await runner.ApplyMigrationsAsync ( GetSqlRunner ( options ) );
 			SystemConsole.WriteLine ( $"Operation Apply is completed!" );
-
-			return 0;
 		}
 
-		public static async Task<int> RevertMigrationsToDatabase ( RevertOptions options ) {
+		public static async Task RevertMigrationsToDatabase ( RevertOptions options ) {
 			var migrationResolvers = await MigrationResolver.GetResolvers ( options.Files, options.Group, options.Strategy );
 			var runner = await GetRunner ( options.ConnectionStrings, migrationResolvers );
 
 			SystemConsole.WriteLine ( $"Starting operation Revert..." );
 			await runner.RevertMigrationAsync ( GetSqlRunner ( options ), options.Migration );
 			SystemConsole.WriteLine ( $"Operation Revert is completed!" );
-
-			return 0;
 		}
 
-		public static async Task<int> ForceRevertMigrationInDatabase ( ForceRevertOptions options ) {
+		public static async Task ForceRevertMigrationInDatabase ( ForceRevertOptions options ) {
 			var migrationResolvers = await MigrationResolver.GetResolvers ( options.Files, options.Group, options.Strategy );
 			var runner = await GetRunner ( options.ConnectionStrings, migrationResolvers );
 
 			SystemConsole.WriteLine ( $"Starting operation Force Revert..." );
 			await runner.ForceMigrationAsync ( GetSqlRunner ( options ), options.Migration );
 			SystemConsole.WriteLine ( $"Operation Force Revert is completed!" );
-
-			return 0;
 		}
 
-		public static async Task<int> ApplyMigrationProfileToDatabase ( ApplyProfileOptions options ) {
+		public static async Task ApplyMigrationProfileToDatabase ( ApplyProfileOptions options ) {
 			var model = await ReadModel<ApplyOptions> ( options.Profile );
 
-			return await ApplyMigrationsToDatabase ( model );
+			await ApplyMigrationsToDatabase ( model );
 		}
 
-		public static async Task<int> RevertMigrationProfileToDatabase ( RevertProfileOptions options ) {
+		public static async Task RevertMigrationProfileToDatabase ( RevertProfileOptions options ) {
 			var model = await ReadModel<RevertOptions> ( options.Profile );
 
 			model.Migration = options.Migration;
 
-			return await RevertMigrationsToDatabase ( model );
+			await RevertMigrationsToDatabase ( model );
 		}
 
-		public static async Task<int> ForceRevertMigrationProfileToDatabase ( ForceRevertProfileOptions options ) {
+		public static async Task ForceRevertMigrationProfileToDatabase ( ForceRevertProfileOptions options ) {
 			var model = await ReadModel<ForceRevertOptions> ( options.Profile );
 
 			model.Migration = options.Migration;
 
-			return await ForceRevertMigrationInDatabase ( model );
+			await ForceRevertMigrationInDatabase ( model );
 		}
 
 		private static async Task<T> ReadModel<T> ( string profile ) where T : DatabaseAdjustments, new() {
@@ -100,24 +94,27 @@ namespace PostgreSQL.Migrations.Console {
 			return model;
 		}
 
-		public static async Task<int> RevertAllMigrations ( RevertAllOptions options ) {
+		public static async Task RevertAllMigrations ( RevertAllOptions options ) {
 			var migrationResolvers = await MigrationResolver.GetResolvers ( options.Files, options.Group, options.Strategy );
 			var runner = await GetRunner ( options.ConnectionStrings, migrationResolvers );
 
 			SystemConsole.WriteLine ( $"Starting operation Revert All..." );
 			await runner.RevertAllMigrationsAsync ( GetSqlRunner ( options ) );
 			SystemConsole.WriteLine ( $"Operation Revert is completed!" );
-
-			return 0;
 		}
 
-		public static async Task<int> RevertAllMigrationsProfile ( RevertAllProfileOptions options ) {
+		public static async Task RevertAllMigrationsProfile ( RevertAllProfileOptions options ) {
 			var model = await ReadModel<RevertAllOptions> ( options.Profile );
 
-			return await RevertAllMigrations ( model );
+			await RevertAllMigrations ( model );
 		}
 
 		public static async Task PackMigrations ( PackMigrationsOptions options ) {
+			if ( string.IsNullOrEmpty ( options?.ResultPath ) ) {
+				SystemConsole.WriteLine ( $"Parameter `resultfile` is not defined!" );
+				return;
+			}
+
 			var migrationResolvers = await MigrationResolver.GetResolvers ( options.Files, options.Group, options.Strategy );
 
 			var result = new List<AvailableMigration> ();
