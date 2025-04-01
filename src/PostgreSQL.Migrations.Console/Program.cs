@@ -54,9 +54,20 @@ await CommandLine.Console ()
 		$"{typeof ( ApplyOptions ).Assembly.GetName ().Version}",
 		"Tool for performing database migrations.\nYou can download latest version from https://github.com/EmptyFlow/PostgreSQL.Migrations/releases",
 		"Copyright (c) Roman Vladimirov",
-		"fwmigrations"
+		"fmigrations"
 	)
-	.AddAsyncCommand<ApplyOptions> ( "apply", DatabaseOperations.ApplyMigrationsToDatabase, "Apply all new migrations to database(s).", databaseAdjustments )
+	.AddAsyncCommand<ApplyOptions> (
+		"apply",
+		DatabaseOperations.ApplyMigrationsToDatabase,
+		"Apply all new migrations to database(s).",
+		databaseAdjustments
+	)
+	.AddAsyncCommand<ApplyProfileOptions> (
+		"apply-profile",
+		DatabaseOperations.ApplyMigrationProfileToDatabase,
+		"Read options from profile and apply all new migrations to database(s).",
+		profileAdjustments
+	)
 	.AddAsyncCommand<RevertOptions> (
 		"revert",
 		DatabaseOperations.RevertMigrationsToDatabase,
@@ -93,12 +104,6 @@ await CommandLine.Console ()
 		"Revert database to state before all migrations.",
 		profileAdjustments
 	)
-	.AddAsyncCommand<ApplyProfileOptions> (
-		"apply-profile",
-		DatabaseOperations.ApplyMigrationProfileToDatabase,
-		"Read options from profile and apply all new migrations to database(s).",
-		profileAdjustments
-	)
 	.AddAsyncCommand<AddMigrationOptions> (
 		"add-migration",
 		AddMigrationOperations.AddMigration,
@@ -120,7 +125,7 @@ await CommandLine.Console ()
 	.AddAsyncCommand<PackMigrationsProfileOptions> (
 		"pack-profile",
 		DatabaseOperations.PackMigrationsProfile,
-		"Read migrations and create single file containing all migrations.",
+		"Read migrations and create single file containing all migrations based on profile.",
 		profileAdjustments
 	)
 	.RunCommandAsync ();

@@ -3,173 +3,179 @@
 namespace Database.Migrations {
 
 
-    public sealed class MigrationRunner {
+	public sealed class MigrationRunner {
 
-        private readonly List<AvailableMigration> m_availableMigrations = new ();
+		private readonly List<AvailableMigration> m_availableMigrations = new ();
 
-        private readonly List<string> m_connectionStrings = new ();
+		private readonly List<string> m_connectionStrings = new ();
 
-        private readonly ConsoleMigrationRunnerLogger m_consoleLogger = new ();
+		private readonly ConsoleMigrationRunnerLogger m_consoleLogger = new ();
 
-        private readonly WeakReference<IMigrationRunnerLogger>? m_logger;
+		private readonly WeakReference<IMigrationRunnerLogger>? m_logger;
 
-        public MigrationRunner ( IMigrationRunnerLogger? logger = default ) {
-            m_logger = new WeakReference<IMigrationRunnerLogger> ( logger != default ? logger : m_consoleLogger );
-        }
+		public MigrationRunner ( IMigrationRunnerLogger? logger = default ) {
+			m_logger = new WeakReference<IMigrationRunnerLogger> ( logger != default ? logger : m_consoleLogger );
+		}
 
-        public int CountMigrations () => m_availableMigrations.Count;
+		public int CountMigrations () => m_availableMigrations.Count;
 
-        private void Log ( string message ) {
-            if ( m_logger!.TryGetTarget ( out var logger ) ) logger.Log ( message );
-        }
+		private void Log ( string message ) {
+			if ( m_logger!.TryGetTarget ( out var logger ) ) logger.Log ( message );
+		}
 
-        private static string HidePasswordInConnectionString ( string connectionString ) {
+		private static string HidePasswordInConnectionString ( string connectionString ) {
 
-            var match = Regex.Match ( connectionString, "Password=(.){0,};" );
-            if ( match != null ) return connectionString.Replace ( match.Value, "Password=*****;" );
+			var match = Regex.Match ( connectionString, "Password=(.){0,};" );
+			if ( match != null ) return connectionString.Replace ( match.Value, "Password=*****;" );
 
-            var endLineMatch = Regex.Match ( connectionString, "Password=(.){0,}" );
-            if ( endLineMatch != null ) return connectionString.Replace ( endLineMatch.Value, "Password=*****" );
+			var endLineMatch = Regex.Match ( connectionString, "Password=(.){0,}" );
+			if ( endLineMatch != null ) return connectionString.Replace ( endLineMatch.Value, "Password=*****" );
 
-            return connectionString;
-        }
+			return connectionString;
+		}
 
-        public async Task LoadMigrationsAsync ( IMigrationsAsyncResolver resolver ) {
-            if ( m_availableMigrations.Any () ) m_availableMigrations.Clear ();
+		public async Task LoadMigrationsAsync ( IMigrationsAsyncResolver resolver ) {
+			if ( m_availableMigrations.Any () ) m_availableMigrations.Clear ();
 
-            m_availableMigrations.AddRange ( await resolver.GetMigrationsAsync () );
-        }
+			m_availableMigrations.AddRange ( await resolver.GetMigrationsAsync () );
+		}
 
-        public async Task LoadMigrationsAsync ( IEnumerable<IMigrationsAsyncResolver> resolvers ) {
-            if ( m_availableMigrations.Any () ) m_availableMigrations.Clear ();
+		public async Task LoadMigrationsAsync ( IEnumerable<IMigrationsAsyncResolver> resolvers ) {
+			if ( m_availableMigrations.Any () ) m_availableMigrations.Clear ();
 
-            foreach ( var resolver in resolvers ) m_availableMigrations.AddRange ( await resolver.GetMigrationsAsync () );
-        }
+			foreach ( var resolver in resolvers ) m_availableMigrations.AddRange ( await resolver.GetMigrationsAsync () );
+		}
 
-        public void ConnectionString ( string connectionString ) {
-            m_connectionStrings.Clear ();
-            m_connectionStrings.Add ( connectionString );
-        }
+		public void ConnectionString ( string connectionString ) {
+			m_connectionStrings.Clear ();
+			m_connectionStrings.Add ( connectionString );
+		}
 
-        public void ConnectionString ( IEnumerable<string> connectionStrings ) {
-            m_connectionStrings.Clear ();
-            m_connectionStrings.AddRange ( connectionStrings );
-        }
+		public void ConnectionString ( IEnumerable<string> connectionStrings ) {
+			m_connectionStrings.Clear ();
+			m_connectionStrings.AddRange ( connectionStrings );
+		}
 
-        public async Task ApplyMigrationsAsync ( ISqlRunner sqlRunner ) {
-            if ( !m_availableMigrations.Any () ) return;
+		public async Task ApplyMigrationsAsync ( ISqlRunner sqlRunner ) {
+			if ( !m_availableMigrations.Any () ) return;
 
-            Log ( "Operation: Apply migrations" );
+			Log ( "Operation: Apply migrations" );
 
-            var migrations = m_availableMigrations
-                .OrderBy ( a => a.MigrationNumber )
-                .ToList ();
+			var migrations = m_availableMigrations
+				.OrderBy ( a => a.MigrationNumber )
+				.ToList ();
 
-            Log ( $"Founded migrations: {migrations.Count}" );
+			Log ( $"Founded migrations: {migrations.Count}" );
 
-            foreach ( var connectionString in m_connectionStrings ) {
-                Log ( $"Applied for connection string: {HidePasswordInConnectionString ( connectionString )}" );
+			foreach ( var connectionString in m_connectionStrings ) {
+				Log ( $"Applied for connection string: {HidePasswordInConnectionString ( connectionString )}" );
 
-                await sqlRunner.BeginTransactionAsync ( connectionString );
+				await sqlRunner.BeginTransactionAsync ( connectionString );
 
-                var appliedMigrations = await sqlRunner.GetAppliedMigrations ( connectionString );
+				var appliedMigrations = await sqlRunner.GetAppliedMigrations ( connectionString );
 
-                var notAppliedMigrations = migrations
-                    .Where ( a => !appliedMigrations.Contains ( a.MigrationNumber ) )
-                    .ToArray ();
+				var notAppliedMigrations = migrations
+					.Where ( a => !appliedMigrations.Contains ( a.MigrationNumber ) )
+					.ToArray ();
 
-                foreach ( var notAppliedMigration in notAppliedMigrations ) {
-                    Log ( $"Started applying migration with number {notAppliedMigration.MigrationNumber}" );
-                    await sqlRunner.ApplyMigrationAsync ( connectionString, notAppliedMigration );
-                    Log ( $"Finished applying migration with number {notAppliedMigration.MigrationNumber}" );
-                }
+				if ( !notAppliedMigrations.Any () ) {
+					Log ( $"No migrations found for apply operation!" );
+					await sqlRunner.RollbackTransactionAsync ( connectionString );
+					continue;
+				}
 
-                await sqlRunner.CommitTransactionAsync ( connectionString );
-            }
-        }
+				foreach ( var notAppliedMigration in notAppliedMigrations ) {
+					Log ( $"Started applying migration with number {notAppliedMigration.MigrationNumber}" );
+					await sqlRunner.ApplyMigrationAsync ( connectionString, notAppliedMigration );
+					Log ( $"Finished applying migration with number {notAppliedMigration.MigrationNumber}" );
+				}
 
-        public async Task ForceMigrationAsync ( ISqlRunner sqlRunner, int migration ) {
-            Log ( "Operation: Force migration" );
+				await sqlRunner.CommitTransactionAsync ( connectionString );
+			}
+		}
 
-            foreach ( var connectionString in m_connectionStrings ) {
-                Log ( $"Applied for connection string: {HidePasswordInConnectionString ( connectionString )}" );
+		public async Task ForceMigrationAsync ( ISqlRunner sqlRunner, int migration ) {
+			Log ( "Operation: Force migration" );
 
-                await sqlRunner.BeginTransactionAsync ( connectionString );
+			foreach ( var connectionString in m_connectionStrings ) {
+				Log ( $"Applied for connection string: {HidePasswordInConnectionString ( connectionString )}" );
 
-                var appliedMigrations = await sqlRunner.GetAppliedMigrations ( connectionString );
-                var fullMigration = GetFullMigration ( migration );
+				await sqlRunner.BeginTransactionAsync ( connectionString );
 
-                if ( appliedMigrations.Contains ( migration ) ) {
-                    Log ( $"Started reverting migration with number {fullMigration.MigrationNumber}" );
-                    await sqlRunner.RevertMigrationAsync ( connectionString, fullMigration );
-                    Log ( $"Finished reverting migration with number {fullMigration.MigrationNumber}" );
-                }
+				var appliedMigrations = await sqlRunner.GetAppliedMigrations ( connectionString );
+				var fullMigration = GetFullMigration ( migration );
 
-                Log ( $"Started applying migration with number {fullMigration.MigrationNumber}" );
-                await sqlRunner.ApplyMigrationAsync ( connectionString, fullMigration );
-                Log ( $"Finished applying migration with number {fullMigration.MigrationNumber}" );
+				if ( appliedMigrations.Contains ( migration ) ) {
+					Log ( $"Started reverting migration with number {fullMigration.MigrationNumber}" );
+					await sqlRunner.RevertMigrationAsync ( connectionString, fullMigration );
+					Log ( $"Finished reverting migration with number {fullMigration.MigrationNumber}" );
+				}
 
-                await sqlRunner.CommitTransactionAsync ( connectionString );
-            }
-        }
+				Log ( $"Started applying migration with number {fullMigration.MigrationNumber}" );
+				await sqlRunner.ApplyMigrationAsync ( connectionString, fullMigration );
+				Log ( $"Finished applying migration with number {fullMigration.MigrationNumber}" );
 
-        private AvailableMigration GetFullMigration ( int migration ) {
-            var fullMigration = m_availableMigrations.FirstOrDefault ( a => a.MigrationNumber == migration );
-            return fullMigration ?? throw new Exception ( $"Migrations with number {migration} was applied but don't contains apropriate item in available migrations!" );
-        }
+				await sqlRunner.CommitTransactionAsync ( connectionString );
+			}
+		}
 
-        public async Task RevertMigrationAsync ( ISqlRunner sqlRunner, int migration ) {
-            Log ( "Operation: Revert migrations" );
+		private AvailableMigration GetFullMigration ( int migration ) {
+			var fullMigration = m_availableMigrations.FirstOrDefault ( a => a.MigrationNumber == migration );
+			return fullMigration ?? throw new Exception ( $"Migrations with number {migration} was applied but don't contains apropriate item in available migrations!" );
+		}
 
-            foreach ( var connectionString in m_connectionStrings ) {
-                Log ( $"Applied for connection string: {HidePasswordInConnectionString ( connectionString )}" );
+		public async Task RevertMigrationAsync ( ISqlRunner sqlRunner, int migration ) {
+			Log ( "Operation: Revert migrations" );
 
-                await sqlRunner.BeginTransactionAsync ( connectionString );
+			foreach ( var connectionString in m_connectionStrings ) {
+				Log ( $"Applied for connection string: {HidePasswordInConnectionString ( connectionString )}" );
 
-                var appliedMigrations = await sqlRunner.GetAppliedMigrations ( connectionString );
-                var migrations = m_availableMigrations.ToDictionary ( a => a.MigrationNumber );
+				await sqlRunner.BeginTransactionAsync ( connectionString );
 
-                foreach ( var appliedMigration in appliedMigrations.OrderByDescending ( a => a ) ) {
-                    if ( appliedMigration < migration ) break;
+				var appliedMigrations = await sqlRunner.GetAppliedMigrations ( connectionString );
+				var migrations = m_availableMigrations.ToDictionary ( a => a.MigrationNumber );
 
-                    if ( migrations.TryGetValue ( appliedMigration, out var fullAppliedMigration ) ) {
-                        Log ( $"Started reverting migration with number {fullAppliedMigration.MigrationNumber}" );
-                        await sqlRunner.RevertMigrationAsync ( connectionString, migrations[appliedMigration] );
-                        Log ( $"Finished reverting migration with number {fullAppliedMigration.MigrationNumber}" );
-                    } else {
-                        Log ( $"Migrations with number {appliedMigration} was applied but don't contains apropriate item in available migrations!" );
-                    }
-                }
+				foreach ( var appliedMigration in appliedMigrations.OrderByDescending ( a => a ) ) {
+					if ( appliedMigration < migration ) break;
 
-                await sqlRunner.CommitTransactionAsync ( connectionString );
-            }
-        }
+					if ( migrations.TryGetValue ( appliedMigration, out var fullAppliedMigration ) ) {
+						Log ( $"Started reverting migration with number {fullAppliedMigration.MigrationNumber}" );
+						await sqlRunner.RevertMigrationAsync ( connectionString, migrations[appliedMigration] );
+						Log ( $"Finished reverting migration with number {fullAppliedMigration.MigrationNumber}" );
+					} else {
+						Log ( $"Migrations with number {appliedMigration} was applied but don't contains apropriate item in available migrations!" );
+					}
+				}
 
-        public async Task RevertAllMigrationsAsync ( ISqlRunner sqlRunner ) {
-            Log ( "Operation: Revert all migrations" );
+				await sqlRunner.CommitTransactionAsync ( connectionString );
+			}
+		}
 
-            foreach ( var connectionString in m_connectionStrings ) {
-                Log ( $"Applied for connection string: {HidePasswordInConnectionString ( connectionString )}" );
+		public async Task RevertAllMigrationsAsync ( ISqlRunner sqlRunner ) {
+			Log ( "Operation: Revert all migrations" );
 
-                await sqlRunner.BeginTransactionAsync ( connectionString );
+			foreach ( var connectionString in m_connectionStrings ) {
+				Log ( $"Applied for connection string: {HidePasswordInConnectionString ( connectionString )}" );
 
-                var appliedMigrations = await sqlRunner.GetAppliedMigrations ( connectionString );
-                var migrations = m_availableMigrations.ToDictionary ( a => a.MigrationNumber );
+				await sqlRunner.BeginTransactionAsync ( connectionString );
 
-                foreach ( var appliedMigration in appliedMigrations.OrderByDescending ( a => a ) ) {
-                    if ( migrations.TryGetValue ( appliedMigration, out var fullAppliedMigration ) ) {
-                        Log ( $"Started reverting migration with number {fullAppliedMigration.MigrationNumber}" );
-                        await sqlRunner.RevertMigrationAsync ( connectionString, migrations[appliedMigration] );
-                        Log ( $"Finished reverting migration with number {fullAppliedMigration.MigrationNumber}" );
-                    } else {
-                        Log ( $"Migrations with number {appliedMigration} was applied but don't contains in available migrations!" );
-                    }
-                }
+				var appliedMigrations = await sqlRunner.GetAppliedMigrations ( connectionString );
+				var migrations = m_availableMigrations.ToDictionary ( a => a.MigrationNumber );
 
-                await sqlRunner.CommitTransactionAsync ( connectionString );
-            }
-        }
+				foreach ( var appliedMigration in appliedMigrations.OrderByDescending ( a => a ) ) {
+					if ( migrations.TryGetValue ( appliedMigration, out var fullAppliedMigration ) ) {
+						Log ( $"Started reverting migration with number {fullAppliedMigration.MigrationNumber}" );
+						await sqlRunner.RevertMigrationAsync ( connectionString, migrations[appliedMigration] );
+						Log ( $"Finished reverting migration with number {fullAppliedMigration.MigrationNumber}" );
+					} else {
+						Log ( $"Migrations with number {appliedMigration} was applied but don't contains in available migrations!" );
+					}
+				}
 
-    }
+				await sqlRunner.CommitTransactionAsync ( connectionString );
+			}
+		}
+
+	}
 
 }
