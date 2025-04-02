@@ -6,10 +6,10 @@ using PostgreSQL.Migrations.Console.Options;
 Dependencies.RegisterDependencies ();
 
 var databaseAdjustments = new List<FlowCommandParameter> {
-	FlowCommandParameter.Create("f", "files", "List of files containing migrations."),
+	FlowCommandParameter.CreateRequired("f", "files", "List of files containing migrations."),
 	FlowCommandParameter.CreateRequired("c", "connectionStrings", "List of connection strings to which migrations will be applied."),
-	FlowCommandParameter.CreateRequired("s", "strategy", "Select strategy for read migrations."),
-	FlowCommandParameter.CreateRequired("g", "group", "If you specify some group or groups (separated by commas), migrations will be filtered by these groups."),
+	FlowCommandParameter.Create("s", "strategy", "Select strategy for read migrations."),
+	FlowCommandParameter.Create("g", "group", "If you specify some group or groups (separated by commas), migrations will be filtered by these groups."),
 	FlowCommandParameter.Create("t", "tablename", "You can change the name of the table in which the migrations will be stored.", "MigrationTable"),
 };
 var revertOptionsDatabaseAdjustments = databaseAdjustments.Concat (
@@ -114,7 +114,7 @@ await CommandLine.Console ()
 		"add-migration-profile",
 		AddMigrationOperations.AddMigrationProfile,
 		"Add new migration file(s) based on profile.",
-		addMigrationAdjustments.Concat( profileAdjustments )
+		addMigrationAdjustments.Concat ( profileAdjustments )
 	)
 	.AddAsyncCommand<PackMigrationsOptions> (
 		"pack",
@@ -127,5 +127,13 @@ await CommandLine.Console ()
 		DatabaseOperations.PackMigrationsProfile,
 		"Read migrations and create single file containing all migrations based on profile.",
 		profileAdjustments
+	)
+	.AddCommand (
+		"version",
+		( VersionOptions options ) => {
+			Console.WriteLine ( typeof ( ApplyOptions ).Assembly.GetName ().Version );
+		},
+		"Display version of application",
+		new List<FlowCommandParameter> ()
 	)
 	.RunCommandAsync ();
