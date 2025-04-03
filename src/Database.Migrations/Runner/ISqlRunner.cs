@@ -17,18 +17,22 @@
         /// <returns></returns>
         Task BeginTransactionAsync ( string connectionString );
 
-        /// <summary>
-        /// Commit database transaction.
-        /// </summary>
-        /// <returns></returns>
-        Task CommitTransactionAsync ( string connectionString );
+		/// <summary>
+		/// Commit database transaction by connection string.
+		/// </summary>
+		Task CommitTransactionAsync ( string connectionString );
 
-        /// <summary>
-        /// Get number of already applied migrations for connection string passed via parameter.
-        /// </summary>
-        /// <param name="connectionString">Connection string.</param>
-        /// <returns>Collection of numbers.</returns>
-        Task<IEnumerable<int>> GetAppliedMigrations ( string connectionString );
+		/// <summary>
+		/// Rollback database transaction by connection string.
+		/// </summary>
+		Task RollbackTransactionAsync ( string connectionString );
+
+		/// <summary>
+		/// Get number of already applied migrations for connection string passed via parameter.
+		/// </summary>
+		/// <param name="connectionString">Connection string.</param>
+		/// <returns>Collection of numbers.</returns>
+		Task<IEnumerable<int>> GetAppliedMigrations ( string connectionString );
 
         /// <summary>
         /// Apply migration.

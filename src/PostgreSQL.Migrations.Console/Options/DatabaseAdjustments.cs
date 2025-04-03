@@ -1,25 +1,20 @@
-﻿using CommandLine;
-
-namespace PostgreSQL.Migrations.Console.Options {
+﻿namespace PostgreSQL.Migrations.Console.Options {
 
 	/// <summary>
 	/// Database adjustments.
 	/// </summary>
 	public class DatabaseAdjustments {
 
-		[Option ( 'f', "files", Required = true, HelpText = "List of files containing migrations." )]
+		//[Option ( 'f', "files", Required = true, HelpText = "List of files containing migrations." )]
 		public IEnumerable<string> Files { get; set; } = Enumerable.Empty<string> ();
 
-		[Option ( 'c', "connectionStrings", Required = true, HelpText = "List of connection strings to which migrations will be applied." )]
+		//[Option ( 'c', "connectionStrings", Required = true, HelpText = "List of connection strings to which migrations will be applied." )]
 		public IEnumerable<string> ConnectionStrings { get; set; } = Enumerable.Empty<string> ();
 
-		[Option ( 's', "strategy", Default = MigrationResolver.DefaultStrategy, HelpText = "Select strategy for read migrations." )]
-		public string Strategy { get; set; } = "";
+		public string Strategy { get; set; } = MigrationResolver.DefaultStrategy;
 
-		[Option ( 'g', "group", HelpText = "If you specify some group or groups (separated by commas), migrations will be filtered by these groups." )]
 		public string Group { get; set; } = "";
 
-		[Option ( 't', "tablename", HelpText = "You can change the name of the table in which the migrations will be stored." )]
 		public string MigrationTable { get; set; } = "";
 
 	}

@@ -2,7 +2,8 @@
   "profiles": {
     "PostgreSQL.Migrations.Console": {
       "commandName": "Project",
-      "commandLineArgs": "--help"
+      "commandLineArgs": "",
+      "workingDirectory": "C:\\work\\Repositories\\OnCms\\ONeilCms"
     }
   }
 }
