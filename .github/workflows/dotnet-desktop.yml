@@ -46,14 +46,14 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore src/PostgreSQL.Migrations.Console/Migrations.Console.csproj
     - name: Publish x64 application
-      run: dotnet publish -r win-x64 -c Release -p:PublishAot=false --self-contained true -p:PublishSingleFile=true src/PostgreSQL.Migrations.Console/Migrations.Console.csproj
+      run: dotnet publish -r win-x64 -c Release --self-contained true src/PostgreSQL.Migrations.Console/Migrations.Console.csproj
     - name: Publish arm64 application
       run: dotnet publish -r win-arm64 -c Release --self-contained true src/PostgreSQL.Migrations.Console/Migrations.Console.csproj
     - name: Upload x64 artifacts
       uses: actions/upload-artifact@v4
       with:
         name: windows64
-        path: src/PostgreSQL.Migrations.Console/bin/Release/net9.0/win-x64/publish/fmigrations.exe
+        path: src/PostgreSQL.Migrations.Console/bin/Release/net9.0/win-x64/native/fmigrations.exe
     - name: Upload arm64 artifacts
       uses: actions/upload-artifact@v4
       with:
@@ -81,8 +81,8 @@ jobs:
     - uses: actions/upload-artifact@v4
       with:
         name: linux64
-        path: src/PostgreSQL.Migrations.Console/bin/Release/net9.0/linux-x64/publish/fmigrations
+        path: src/PostgreSQL.Migrations.Console/bin/Release/net9.0/linux-x64/native/fmigrations
     - uses: actions/upload-artifact@v4
       with:
         name: linuxarm64
-        path: src/PostgreSQL.Migrations.Console/bin/Release/net9.0/linux-arm64/native/fmigrations
+        path: src/PostgreSQL.Migrations.Console/bin/Release/net9.0/linux-arm64/publish/fmigrations
