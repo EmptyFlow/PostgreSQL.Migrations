@@ -13,7 +13,7 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 9.0.x
 
     - name: Restore dependencies
       run: dotnet restore src/PostgreSQL.Migrations.Console/Migrations.Console.csproj
@@ -25,12 +25,12 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: macos64
-        path: src/PostgreSQL.Migrations.Console/bin/Release/net8.0/osx-x64/publish/fmigrations
+        path: src/PostgreSQL.Migrations.Console/bin/Release/net9.0/osx-x64/native/fmigrations
     - name: Upload arm64 artifacts
       uses: actions/upload-artifact@v4
       with:
         name: macosarm64
-        path: src/PostgreSQL.Migrations.Console/bin/Release/net8.0/osx-arm64/publish/fmigrations
+        path: src/PostgreSQL.Migrations.Console/bin/Release/net9.0/osx-arm64/native/fmigrations
         
   windows64:
     runs-on: windows-latest
@@ -41,7 +41,7 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 9.0.x
 
     - name: Restore dependencies
       run: dotnet restore src/PostgreSQL.Migrations.Console/Migrations.Console.csproj
@@ -53,12 +53,12 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: windows64
-        path: src/PostgreSQL.Migrations.Console/bin/Release/net8.0/win-x64/publish/fmigrations.exe
+        path: src/PostgreSQL.Migrations.Console/bin/Release/net9.0/win-x64/native/fmigrations.exe
     - name: Upload arm64 artifacts
       uses: actions/upload-artifact@v4
       with:
         name: windowsarm64
-        path: src/PostgreSQL.Migrations.Console/bin/Release/net8.0/win-arm64/publish/fmigrations.exe
+        path: src/PostgreSQL.Migrations.Console/bin/Release/net9.0/win-arm64/native/fmigrations.exe
         
   linux64:
     runs-on: ubuntu-latest
@@ -81,8 +81,8 @@ jobs:
     - uses: actions/upload-artifact@v4
       with:
         name: linux64
-        path: src/PostgreSQL.Migrations.Console/bin/Release/net9.0/linux-x64/publish/fmigrations
+        path: src/PostgreSQL.Migrations.Console/bin/Release/net9.0/linux-x64/native/fmigrations
     - uses: actions/upload-artifact@v4
       with:
         name: linuxarm64
-        path: src/PostgreSQL.Migrations.Console/bin/Release/net9.0/linux-arm64/publish/fmigrations
+        path: src/PostgreSQL.Migrations.Console/bin/Release/net9.0/linux-arm64/native/fmigrations
