@@ -35,17 +35,17 @@ var profileAdjustments = new List<FlowCommandParameter> {
 var addMigrationAdjustments = new List<FlowCommandParameter> {
 	FlowCommandParameter.CreateRequired("m", "migrationnumber", "Migration number for the new migration file(s)."),
 	FlowCommandParameter.CreateRequired("p", "parameters", "List of parameters."),
-	FlowCommandParameter.CreateRequired("s", "strategy", "Select strategy for adding migration."),
-	FlowCommandParameter.CreateRequired("g", "group", "You can specify group(s) for new migration."),
-	FlowCommandParameter.CreateRequired("i", "issue", "You can specify issue for new migration."),
-	FlowCommandParameter.CreateRequired("d", "description", "You can specify description for new migration."),
+	FlowCommandParameter.Create("s", "strategy", "Select strategy for adding migration."),
+	FlowCommandParameter.Create("g", "group", "You can specify group(s) for new migration."),
+	FlowCommandParameter.Create("i", "issue", "You can specify issue for new migration."),
+	FlowCommandParameter.Create("d", "description", "You can specify description for new migration."),
 };
 
 var packMigrationAdjustments = new List<FlowCommandParameter> {
 	FlowCommandParameter.CreateRequired("f", "files", "List of files containing migrations."),
-	FlowCommandParameter.CreateRequired("s", "strategy", "Select strategy for adding migration."),
-	FlowCommandParameter.CreateRequired("g", "group", "You can specify group(s) for new migration."),
-	FlowCommandParameter.CreateRequired("r", "result", "Path to result file."),
+	FlowCommandParameter.Create("s", "strategy", "Select strategy for adding migration."),
+	FlowCommandParameter.Create("g", "group", "You can specify group(s) for new migration."),
+	FlowCommandParameter.Create("r", "result", "Path to result file."),
 };
 
 await CommandLine.Console ()
