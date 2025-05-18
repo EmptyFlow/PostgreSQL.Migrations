@@ -2,7 +2,6 @@
 
 	public record AddMigrationProfileAdjustments {
 
-		//[Option ( 'p', "profile", HelpText = "Path to profile file." )]
 		public string Profile { get; set; } = "";
 
 	}

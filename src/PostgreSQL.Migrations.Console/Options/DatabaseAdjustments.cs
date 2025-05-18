@@ -11,6 +11,8 @@
 		//[Option ( 'c', "connectionStrings", Required = true, HelpText = "List of connection strings to which migrations will be applied." )]
 		public IEnumerable<string> ConnectionStrings { get; set; } = Enumerable.Empty<string> ();
 
+		public IEnumerable<string> Parameters { get; set; } = Enumerable.Empty<string> ();
+
 		public string Strategy { get; set; } = MigrationResolver.DefaultStrategy;
 
 		public string Group { get; set; } = "";

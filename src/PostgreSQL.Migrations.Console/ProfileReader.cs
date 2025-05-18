@@ -39,7 +39,9 @@ namespace PostgreSQL.Migrations.Console {
 			var adjustmentsModel = (DatabaseAdjustments) model;
 			var connectionStrings = new List<string> ();
 			var files = new List<string> ();
+			var parameters = new List<string> ();
 			foreach ( var item in content.Replace ( "\r", "" ).Split ( "\n" ) ) {
+				if ( item.StartsWith ( GenerationParameterField ) ) parameters.Add ( item.Replace ( GenerationParameterField, "" ) );
 				if ( item.StartsWith ( ConnectionStringField ) ) connectionStrings.Add ( item.Replace ( ConnectionStringField, "" ) );
 				if ( item.StartsWith ( FilesField ) ) files.Add ( item.Replace ( FilesField, "" ) );
 				if ( item.StartsWith ( StrategiesField ) ) adjustmentsModel.Strategy = item.Replace ( StrategiesField, "" );
@@ -49,6 +51,7 @@ namespace PostgreSQL.Migrations.Console {
 
 			adjustmentsModel.ConnectionStrings = connectionStrings;
 			adjustmentsModel.Files = files;
+			adjustmentsModel.Parameters = parameters;
 
 			return model;
 		}

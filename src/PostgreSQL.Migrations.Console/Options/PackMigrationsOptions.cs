@@ -6,6 +6,8 @@
 		//[Option ( 'f', "files", Required = true, HelpText = "List of files containing migrations." )]
 		public IEnumerable<string> Files { get; set; } = Enumerable.Empty<string> ();
 
+		public IEnumerable<string> Parameters { get; set; } = Enumerable.Empty<string> ();
+
 		//[Option ( 's', "strategy", Default = MigrationResolver.DefaultStrategy, HelpText = "Select strategy for adding migration." )]
 		public string Strategy { get; set; } = "";
 

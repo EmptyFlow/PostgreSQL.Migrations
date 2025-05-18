@@ -23,7 +23,7 @@ namespace PostgreSQL.Migrations.Console {
 			};
 		}
 
-		public static async Task<List<IMigrationsAsyncResolver>> GetResolvers ( IEnumerable<string> files, string group, string strategy ) {
+		public static async Task<List<IMigrationsAsyncResolver>> GetResolvers ( IEnumerable<string> files, string group, string strategy, IEnumerable<string> parameters ) {
 			SystemConsole.WriteLine ( $"Trying to use a strategy: {strategy}..." );
 			var migrationResolvers = new List<IMigrationsAsyncResolver> ();
 
@@ -31,7 +31,7 @@ namespace PostgreSQL.Migrations.Console {
 				case DynamicLibraryStrategy:
 					break;
 				case PlainSqlStrategy:
-					migrationResolvers.AddRange ( await StrategyPlainSqlFileResolver.Run ( files, group ) );
+					migrationResolvers.AddRange ( await StrategyPlainSqlFileResolver.Run ( files, group, parameters ) );
 					break;
 				case PlainPackStrategy:
 					migrationResolvers.AddRange ( await StrategyPackedFileResolver.Run ( files, group ) );

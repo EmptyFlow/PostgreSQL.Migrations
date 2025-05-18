@@ -30,7 +30,7 @@ namespace PostgreSQL.Migrations.Console {
 		}
 
 		public static async Task ApplyMigrationsToDatabase ( ApplyOptions options ) {
-			var migrationResolvers = await MigrationResolver.GetResolvers ( options.Files, options.Group, options.Strategy );
+			var migrationResolvers = await MigrationResolver.GetResolvers ( options.Files, options.Group, options.Strategy, options.Parameters );
 
 			var runner = await GetRunner ( options.ConnectionStrings, migrationResolvers );
 
@@ -40,7 +40,7 @@ namespace PostgreSQL.Migrations.Console {
 		}
 
 		public static async Task RevertMigrationsToDatabase ( RevertOptions options ) {
-			var migrationResolvers = await MigrationResolver.GetResolvers ( options.Files, options.Group, options.Strategy );
+			var migrationResolvers = await MigrationResolver.GetResolvers ( options.Files, options.Group, options.Strategy, options.Parameters );
 			var runner = await GetRunner ( options.ConnectionStrings, migrationResolvers );
 
 			SystemConsole.WriteLine ( $"Starting operation Revert..." );
@@ -49,7 +49,7 @@ namespace PostgreSQL.Migrations.Console {
 		}
 
 		public static async Task ForceRevertMigrationInDatabase ( ForceRevertOptions options ) {
-			var migrationResolvers = await MigrationResolver.GetResolvers ( options.Files, options.Group, options.Strategy );
+			var migrationResolvers = await MigrationResolver.GetResolvers ( options.Files, options.Group, options.Strategy, options.Parameters );
 			var runner = await GetRunner ( options.ConnectionStrings, migrationResolvers );
 
 			SystemConsole.WriteLine ( $"Starting operation Force Revert..." );
@@ -95,7 +95,7 @@ namespace PostgreSQL.Migrations.Console {
 		}
 
 		public static async Task RevertAllMigrations ( RevertAllOptions options ) {
-			var migrationResolvers = await MigrationResolver.GetResolvers ( options.Files, options.Group, options.Strategy );
+			var migrationResolvers = await MigrationResolver.GetResolvers ( options.Files, options.Group, options.Strategy, options.Parameters );
 			var runner = await GetRunner ( options.ConnectionStrings, migrationResolvers );
 
 			SystemConsole.WriteLine ( $"Starting operation Revert All..." );
@@ -115,7 +115,7 @@ namespace PostgreSQL.Migrations.Console {
 				return;
 			}
 
-			var migrationResolvers = await MigrationResolver.GetResolvers ( options.Files, options.Group, options.Strategy );
+			var migrationResolvers = await MigrationResolver.GetResolvers ( options.Files, options.Group, options.Strategy, options.Parameters );
 
 			var result = new List<AvailableMigration> ();
 

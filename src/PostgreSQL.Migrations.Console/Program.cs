@@ -6,7 +6,8 @@ using PostgreSQL.Migrations.Console.Options;
 Dependencies.RegisterDependencies ();
 
 var databaseAdjustments = new List<FlowCommandParameter> {
-	FlowCommandParameter.CreateRequired("f", "files", "List of files containing migrations."),
+	FlowCommandParameter.Create("f", "files", "List of files containing migrations."),
+	FlowCommandParameter.Create("p", "parameters", "List of parameters."),
 	FlowCommandParameter.CreateRequired("c", "connectionStrings", "List of connection strings to which migrations will be applied."),
 	FlowCommandParameter.Create("s", "strategy", "Select strategy for read migrations."),
 	FlowCommandParameter.Create("g", "group", "If you specify some group or groups (separated by commas), migrations will be filtered by these groups."),
@@ -114,7 +115,14 @@ await CommandLine.Console ()
 		"add-migration-profile",
 		AddMigrationOperations.AddMigrationProfile,
 		"Add new migration file(s) based on profile.",
-		addMigrationAdjustments.Concat ( profileAdjustments )
+		new List<FlowCommandParameter> {
+			FlowCommandParameter.CreateRequired("m", "migrationnumber", "Migration number for the new migration file(s)."),
+			FlowCommandParameter.Create("s", "strategy", "Select strategy for adding migration."),
+			FlowCommandParameter.Create("g", "group", "You can specify group(s) for new migration."),
+			FlowCommandParameter.Create("i", "issue", "You can specify issue for new migration."),
+			FlowCommandParameter.Create("d", "description", "You can specify description for new migration."),
+			FlowCommandParameter.Create("p", "profile", "This is an optional parameter where you can specify the path to the profile. If the parameter is not specified, an attempt will be made to find the profile in the current directory.")
+		}
 	)
 	.AddAsyncCommand<PackMigrationsOptions> (
 		"pack",
