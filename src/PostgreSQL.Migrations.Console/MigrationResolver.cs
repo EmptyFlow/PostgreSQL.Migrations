@@ -1,5 +1,4 @@
-﻿using PostgreSQL.Migrations.Console.Strategies;
-using Database.Migrations;
+﻿using Database.Migrations;
 using SystemConsole = System.Console;
 using Migrations.Console.Strategies;
 
@@ -7,17 +6,17 @@ namespace PostgreSQL.Migrations.Console {
 
 	public static class MigrationResolver {
 
-		private const string CSharpClassesStrategy = "CSharpClasses";
-
 		private const string PlainSqlStrategy = "PlainSql";
 
 		private const string PlainPackStrategy = "Packed";
 
-		public const string DefaultStrategy = CSharpClassesStrategy;
+		private const string DynamicLibraryStrategy = "DynamicLib";
+
+		public const string DefaultStrategy = PlainSqlStrategy;
 
 		public static IMigrationsAsyncResolver GetResolver ( string strategy ) {
 			return strategy switch {
-				CSharpClassesStrategy => new MigrationNumberAttributeResolver (),
+				DynamicLibraryStrategy => new PlainSqlFileResolver (),
 				PlainSqlStrategy => new PlainSqlFileResolver (),
 				PlainPackStrategy => new PackFileResolver(),
 				_ => throw new NotSupportedException ( $"Strategy {strategy} not supported!" )
@@ -29,8 +28,7 @@ namespace PostgreSQL.Migrations.Console {
 			var migrationResolvers = new List<IMigrationsAsyncResolver> ();
 
 			switch ( strategy ) {
-				case CSharpClassesStrategy:
-					migrationResolvers.AddRange ( await StrategyCSharpClassesResolver.Run ( files, group ) );
+				case DynamicLibraryStrategy:
 					break;
 				case PlainSqlStrategy:
 					migrationResolvers.AddRange ( await StrategyPlainSqlFileResolver.Run ( files, group ) );

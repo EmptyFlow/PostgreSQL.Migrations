@@ -5,6 +5,7 @@
 		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<NativeAot>enable</NativeAot>
 		<Title>Console application for run migrations</Title>
 		<Version>0.0.10</Version>
 		<AssemblyName>fmigrations</AssemblyName>
