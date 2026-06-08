@@ -33,19 +33,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Npgsql" Version="10.0.3" Condition="'$(TargetFramework)' == 'net8.0'" />
-		<PackageReference Include="Npgsql" Version="10.0.3" Condition="'$(TargetFramework)' == 'net9.0'" />
+		<PackageReference Include="Npgsql" Version="9.0.3" Condition="'$(TargetFramework)' == 'net9.0'" />
 		<PackageReference Include="Npgsql" Version="10.0.3" Condition="'$(TargetFramework)' == 'net10.0'" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Compile Include="../Database.Migrations/Client/*.cs;../Database.Migrations/JsonSerializers/*.cs;../Database.Migrations/Readers/*.cs;../Database.Migrations/Runner/*.cs" />
-
-		<EmbeddedResource Include="../Database.Migrations/Client/Templates/WithNamespaceTemplate.template" Link="WithNamespaceTemplate.template">
-			<LogicalName>Database.Migrations.Client.Templates.WithNamespaceTemplate.template</LogicalName>
-		</EmbeddedResource>
-		<EmbeddedResource Include="../Database.Migrations/Client/Templates/WithoutNamespaceTemplate.template" Link="WithoutNamespaceTemplate.template">
-			<LogicalName>Database.Migrations.Client.Templates.WithoutNamespaceTemplate.template</LogicalName>
-		</EmbeddedResource>
 	</ItemGroup>
 </Project>

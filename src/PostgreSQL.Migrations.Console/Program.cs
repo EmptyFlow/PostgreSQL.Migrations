@@ -117,7 +117,6 @@ await CommandLine.Console ()
 		"Add new migration file(s) based on profile.",
 		new List<FlowCommandParameter> {
 			FlowCommandParameter.CreateRequired("m", "migrationnumber", "Migration number for the new migration file(s)."),
-			FlowCommandParameter.Create("s", "strategy", "Select strategy for adding migration."),
 			FlowCommandParameter.Create("g", "group", "You can specify group(s) for new migration."),
 			FlowCommandParameter.Create("i", "issue", "You can specify issue for new migration."),
 			FlowCommandParameter.Create("d", "description", "You can specify description for new migration."),

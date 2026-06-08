@@ -7,14 +7,4 @@
 		<Version>0.0.11</Version>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<None Remove="Client\Templates\WithNamespaceTemplate.template" />
-		<None Remove="Client\Templates\WithoutNamespaceTemplate.template" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Include="Client\Templates\WithNamespaceTemplate.template" />
-		<EmbeddedResource Include="Client\Templates\WithoutNamespaceTemplate.template" />
-	</ItemGroup>
-
 </Project>
